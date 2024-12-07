@@ -1,5 +1,5 @@
 name: impakt
-description: "A new Flutter project."
+description: "Measure your climate impakt!"
 
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
@@ -14,6 +14,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
