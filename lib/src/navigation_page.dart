@@ -53,7 +53,7 @@ class _MainViewState extends State<MainView> {
 				index: currentIndex,
 				children: <Widget>[
 					_buildNavigatorFor(_navigatorKeys[0], HomePage.routeName),
-					_buildNavigatorFor(_navigatorKeys[1], SampleItemListView.routeName),
+					_buildNavigatorFor(_navigatorKeys[1], EstimationListView.routeName),
 					_buildNavigatorFor(_navigatorKeys[2], SettingsView.routeName),
 				],
 			),
@@ -89,8 +89,8 @@ class _MainViewState extends State<MainView> {
 					case HomePage.routeName:
 						page = const HomePage();
 						break;
-					case SampleItemListView.routeName:
-						page = const SampleItemListView();
+					case EstimationListView.routeName:
+						page = const EstimationListView();
 						break;
 					case SettingsView.routeName:
 						page = SettingsView(controller: widget.settingsController);
@@ -114,8 +114,8 @@ class _MainViewState extends State<MainView> {
 						break;
 
 					// internal path on /estimation_list
-					case SampleItemDetailsView.routeName:
-						page = const SampleItemDetailsView();
+					case EstimationItemDetailsView.routeName:
+						page = const EstimationItemDetailsView();
 						break;
 					default:
 						return null;

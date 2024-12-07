@@ -4,14 +4,14 @@ import 'estimation_item.dart';
 import 'estimation_item_details_view.dart';
 
 /// Displays a list of SampleItems.
-class SampleItemListView extends StatelessWidget {
-	const SampleItemListView({
+class EstimationListView extends StatelessWidget {
+	const EstimationListView({
 		super.key,
-		this.items = const [SampleItem(1), SampleItem(2), SampleItem(3)],
+		this.items = const [EstimationItem("Electricity"), EstimationItem("Flight"), EstimationItem("Fuel Combustion"), EstimationItem("Shipping"), EstimationItem("Vehicle")],
 	});
 
 	static const routeName = '/estimation_list';
-	final List<SampleItem> items;
+	final List<EstimationItem> items;
 
 	@override
 	Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class SampleItemListView extends StatelessWidget {
 					final item = items[index];
 
 					return ListTile(
-						title: Text('Estimation ${item.id}'),
+						title: Text('${item.type} estimation'),
 						leading: const CircleAvatar(
 						// Display the Flutter Logo image asset.
 						foregroundImage: AssetImage('assets/images/flutter_logo.png'),
@@ -47,7 +47,7 @@ class SampleItemListView extends StatelessWidget {
 							// background, the navigation stack is restored.
 							Navigator.restorablePushNamed(
 								context,
-								SampleItemDetailsView.routeName,
+								EstimationItemDetailsView.routeName,
 							);
 						}
 					);
