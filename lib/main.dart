@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'src/home.dart';
+import 'src/home/home.dart';
+import 'src/navigation_page.dart';
 
 import 'src/settings/settings_controller.dart';
 import 'src/settings/settings_service.dart';
@@ -60,8 +61,9 @@ class MyApp extends StatelessWidget {
 					themeMode: settingsController.themeMode,
 
 					// Sets the routes for the application
-					initialRoute: HomePage.routeName,
+					initialRoute: MainView.routeName,
 					routes: {
+						MainView.routeName: (context) => MainView(settingsController: settingsController),
 						HomePage.routeName: (context) => const HomePage(),
 						SampleItemListView.routeName: (context) => const SampleItemListView(),
 						SettingsView.routeName: (context) => SettingsView(controller: settingsController),
