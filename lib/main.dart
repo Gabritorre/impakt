@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'src/home.dart';
+
 import 'src/settings/settings_controller.dart';
 import 'src/settings/settings_service.dart';
 import 'src/settings/settings_view.dart';
@@ -41,12 +43,6 @@ class MyApp extends StatelessWidget {
 			listenable: settingsController,
 			builder: (BuildContext context, Widget? child) {
 				return MaterialApp(
-					// Providing a restorationScopeId allows the Navigator built by the
-					// MaterialApp to restore the navigation stack when a user leaves and
-					// returns to the app after it has been killed while running in the
-					// background.
-					restorationScopeId: 'app',
-
 					// the title of the application
 					title: 'impakt',
 
@@ -57,13 +53,10 @@ class MyApp extends StatelessWidget {
 					darkTheme: ThemeData.dark(),
 					themeMode: settingsController.themeMode,
 
-					// Sets the initial route of the application to SampleItemListView.
-					// Defines the named routes for the application:
-					// - SampleItemListView.routeName: Displays the SampleItemListView widget.
-					// - SettingsView.routeName: Displays the SettingsView widget with a settings controller.
-					// - SampleItemDetailsView.routeName: Displays the SampleItemDetailsView widget.
-					initialRoute: SampleItemListView.routeName,
+					// Sets the routes for the application
+					initialRoute: HomePage.routeName,
 					routes: {
+						HomePage.routeName: (context) => const HomePage(),
 						SampleItemListView.routeName: (context) => const SampleItemListView(),
 						SettingsView.routeName: (context) => SettingsView(controller: settingsController),
 						SampleItemDetailsView.routeName: (context) => const SampleItemDetailsView(),

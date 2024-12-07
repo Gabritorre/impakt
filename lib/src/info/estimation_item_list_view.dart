@@ -11,8 +11,7 @@ class SampleItemListView extends StatelessWidget {
 		this.items = const [SampleItem(1), SampleItem(2), SampleItem(3)],
 	});
 
-	static const routeName = '/';
-
+	static const routeName = '/estimation_list';
 	final List<SampleItem> items;
 
 	@override
