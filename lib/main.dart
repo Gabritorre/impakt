@@ -1,20 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'src/home/home.dart';
 import 'src/navigation_page.dart';
 
 import 'src/settings/settings_controller.dart';
 import 'src/settings/settings_service.dart';
-import 'src/settings/settings_view.dart';
-
-import 'src/info/estimation_item_details_view.dart';
-import 'src/info/estimation_item_list_view.dart';
-
-import 'src/estimate/electricity.dart';
-import 'src/estimate/flight.dart';
-import 'src/estimate/fuel_combustion.dart';
-import 'src/estimate/shipping.dart';
-import 'src/estimate/vehicle.dart';
 
 void main() async {
 	// Set up the SettingsController, which will glue user settings to multiple
@@ -60,20 +49,7 @@ class MyApp extends StatelessWidget {
 					darkTheme: ThemeData.dark(),
 					themeMode: settingsController.themeMode,
 
-					// Sets the routes for the application
-					initialRoute: MainView.routeName,
-					routes: {
-						MainView.routeName: (context) => MainView(settingsController: settingsController),
-						HomePage.routeName: (context) => const HomePage(),
-						SampleItemListView.routeName: (context) => const SampleItemListView(),
-						SettingsView.routeName: (context) => SettingsView(controller: settingsController),
-						SampleItemDetailsView.routeName: (context) => const SampleItemDetailsView(),
-						ElectricityEstimationView.routeName: (context) => const ElectricityEstimationView(),
-						FlightEstimationView.routeName: (context) => const FlightEstimationView(),
-						FuelEstimationView.routeName: (context) => const FuelEstimationView(),
-						ShippingEstimationView.routeName: (context) => const ShippingEstimationView(),
-						VehicleEstimationView.routeName: (context) => const VehicleEstimationView(),
-					},
+					home: MainView(settingsController: settingsController),
 				);
 			},
 		);

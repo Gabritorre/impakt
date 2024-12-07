@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'estimate/electricity.dart';
+import 'estimate/flight.dart';
+import 'estimate/fuel_combustion.dart';
+import 'estimate/shipping.dart';
+import 'estimate/vehicle.dart';
+
+import 'info/estimation_item_details_view.dart';
 import 'info/estimation_item_list_view.dart';
 import 'home/home.dart';
 import 'settings/settings_view.dart';
@@ -17,32 +24,38 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-	int currentViewIndex = 0;
+	int currentIndex = 0;
 
-	List<Widget> pages = [];
-
-	@override
-	void initState() {
-		super.initState();
-		pages = [
-			const HomePage(),
-			const SampleItemListView(),
-			SettingsView(controller: widget.settingsController),
-		];
-	}
+	// List of GlobalKeys to manage the state of each Navigator.
+	final List<GlobalKey<NavigatorState>> _navigatorKeys = [
+		GlobalKey<NavigatorState>(),
+		GlobalKey<NavigatorState>(),
+		GlobalKey<NavigatorState>(),
+	];
 
 	void _onItemTapped(int index) {
-		setState(() {
-			currentViewIndex = index;
-		});
+		// If the tapped item is the current item, pop until the last page is reached
+		if (index == currentIndex) {
+			_navigatorKeys[index].currentState!.popUntil((route) => route.isFirst);
+		}
+		// Otherwise, only go on the last visited page of that item
+		else {
+			setState(() {
+				currentIndex = index;
+			});
+		}
 	}
 
 	@override
 	Widget build(BuildContext context) {
 		return Scaffold(
 			body: IndexedStack(
-				index: currentViewIndex,
-				children: pages,
+				index: currentIndex,
+				children: <Widget>[
+					_buildNavigatorFor(_navigatorKeys[0], HomePage.routeName),
+					_buildNavigatorFor(_navigatorKeys[1], SampleItemListView.routeName),
+					_buildNavigatorFor(_navigatorKeys[2], SettingsView.routeName),
+				],
 			),
 			bottomNavigationBar: BottomNavigationBar(
 				items: const <BottomNavigationBarItem>[
@@ -59,10 +72,56 @@ class _MainViewState extends State<MainView> {
 						label: 'Settings',
 					),
 				],
-				currentIndex: currentViewIndex,
+				currentIndex: currentIndex,
 				selectedItemColor: Colors.amber[800],
 				onTap: _onItemTapped,
 			),
+		);
+	}
+
+	Widget _buildNavigatorFor(GlobalKey<NavigatorState> navigatorKey, String initialRoute) {
+		return Navigator(
+			key: navigatorKey,
+			initialRoute: initialRoute,
+			onGenerateRoute: (RouteSettings settings) {
+				Widget page;
+				switch (settings.name) {
+					case HomePage.routeName:
+						page = const HomePage();
+						break;
+					case SampleItemListView.routeName:
+						page = const SampleItemListView();
+						break;
+					case SettingsView.routeName:
+						page = SettingsView(controller: widget.settingsController);
+						break;
+
+					// internal path on /home
+					case ElectricityEstimationView.routeName:
+						page = const ElectricityEstimationView();
+						break;
+					case FlightEstimationView.routeName:
+						page = const FlightEstimationView();
+						break;
+					case FuelEstimationView.routeName:
+						page = const FuelEstimationView();
+						break;
+					case ShippingEstimationView.routeName:
+						page = const ShippingEstimationView();
+						break;
+					case VehicleEstimationView.routeName:
+						page = const VehicleEstimationView();
+						break;
+
+					// internal path on /estimation_list
+					case SampleItemDetailsView.routeName:
+						page = const SampleItemDetailsView();
+						break;
+					default:
+						return null;
+				}
+				return MaterialPageRoute(builder: (context) => page);
+			},
 		);
 	}
 }
