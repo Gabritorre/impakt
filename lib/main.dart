@@ -9,6 +9,12 @@ import 'src/settings/settings_view.dart';
 import 'src/info/estimation_item_details_view.dart';
 import 'src/info/estimation_item_list_view.dart';
 
+import 'src/estimate/electricity.dart';
+import 'src/estimate/flight.dart';
+import 'src/estimate/fuel_combustion.dart';
+import 'src/estimate/shipping.dart';
+import 'src/estimate/vehicle.dart';
+
 void main() async {
 	// Set up the SettingsController, which will glue user settings to multiple
 	// Flutter Widgets.
@@ -60,6 +66,11 @@ class MyApp extends StatelessWidget {
 						SampleItemListView.routeName: (context) => const SampleItemListView(),
 						SettingsView.routeName: (context) => SettingsView(controller: settingsController),
 						SampleItemDetailsView.routeName: (context) => const SampleItemDetailsView(),
+						ElectricityEstimationView.routeName: (context) => const ElectricityEstimationView(),
+						FlightEstimationView.routeName: (context) => const FlightEstimationView(),
+						FuelEstimationView.routeName: (context) => const FuelEstimationView(),
+						ShippingEstimationView.routeName: (context) => const ShippingEstimationView(),
+						VehicleEstimationView.routeName: (context) => const VehicleEstimationView(),
 					},
 				);
 			},

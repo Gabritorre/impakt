@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'estimate/electricity.dart';
+import 'estimate/flight.dart';
+import 'estimate/fuel_combustion.dart';
+import 'estimate/shipping.dart';
+import 'estimate/vehicle.dart';
+
+import 'info/estimation_item_list_view.dart';
+
+import 'settings/settings_view.dart';
+
 class HomePage extends StatelessWidget {
 	const HomePage({super.key});
 
@@ -7,7 +17,6 @@ class HomePage extends StatelessWidget {
 
 	@override
 	Widget build(BuildContext context) {
-
 		return Scaffold(
 			appBar: AppBar(
 				title: const Text('Home page'),
@@ -18,31 +27,31 @@ class HomePage extends StatelessWidget {
 					children:[
 						ElevatedButton(
 							onPressed: () {
-								Navigator.pushNamed(context, '/');
+								Navigator.pushNamed(context, ElectricityEstimationView.routeName);
 							},
 							child: const Text('Electricity'),
 						),
 						ElevatedButton(
 							onPressed: () {
-								Navigator.pushNamed(context, '/');
+								Navigator.pushNamed(context, FlightEstimationView.routeName);
 							},
 							child: const Text('Flight'),
 						),
 						ElevatedButton(
 							onPressed: () {
-								Navigator.pushNamed(context, '/');
+								Navigator.pushNamed(context, FuelEstimationView.routeName);
 							},
 							child: const Text('Fuel combustion'),
 						),
 						ElevatedButton(
 							onPressed: () {
-								Navigator.pushNamed(context, '/');
+								Navigator.pushNamed(context, ShippingEstimationView.routeName);
 							},
 							child: const Text('Shipping'),
 						),
 						ElevatedButton(
 							onPressed: () {
-								Navigator.pushNamed(context, '/');
+								Navigator.pushNamed(context, VehicleEstimationView.routeName);
 							},
 							child: const Text('Vehicle'),
 						),
@@ -68,16 +77,22 @@ class HomePage extends StatelessWidget {
 				onTap: (int index) {
 					switch(index){
 						case 0:
-							Navigator.pushNamed(context, '/');
+							if (ModalRoute.of(context)!.settings.name != HomePage.routeName){
+								Navigator.pushNamed(context, HomePage.routeName);
+							}
 							break;
 						case 1:
-							Navigator.pushNamed(context, '/estimation_list');
+							if (ModalRoute.of(context)!.settings.name != SampleItemListView.routeName){
+								Navigator.pushNamed(context, SampleItemListView.routeName);
+							}
 							break;
 						case 2:
-							Navigator.pushNamed(context, '/settings');
+							if (ModalRoute.of(context)!.settings.name != SettingsView.routeName){
+								Navigator.pushNamed(context, SettingsView.routeName);
+							}
 							break;
 						default:
-							Navigator.pushNamed(context, '/');
+							Navigator.pushNamed(context, HomePage.routeName);
 					}
 				},
 			),
