@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
 						),
 						ElevatedButton(
 							onPressed: () {
-								Navigator.pushNamed(context, FuelEstimationView.routeName);
+								Navigator.pushNamed(context, FuelCombustionEstimationView.routeName);
 							},
 							child: const Text('Fuel combustion'),
 						),

@@ -103,8 +103,8 @@ class _MainViewState extends State<MainView> {
 					case FlightEstimationView.routeName:
 						page = const FlightEstimationView();
 						break;
-					case FuelEstimationView.routeName:
-						page = const FuelEstimationView();
+					case FuelCombustionEstimationView.routeName:
+						page = const FuelCombustionEstimationView();
 						break;
 					case ShippingEstimationView.routeName:
 						page = const ShippingEstimationView();
