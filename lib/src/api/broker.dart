@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 enum HttpMethod {get, post}
 
 class CarbonEstimateBroker {
-	static const String _apiKey = '';
+	static final String _apiKey = dotenv.env['API_KEY']!;
 	static const String _baseUrl = 'https://www.carboninterface.com/api/v1';
 	
 	final Map<String, String> _headers = {
