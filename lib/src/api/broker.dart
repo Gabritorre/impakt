@@ -1,30 +1,52 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class CarbonEstimateBroker {
-	static const String apiKey = '';
-	final Uri url;
+enum HttpMethod {get, post}
 
-	final Map<String, String> headers = {
-		'Authorization': 'Bearer $apiKey',
+class CarbonEstimateBroker {
+	static const String _apiKey = '';
+	static const String _baseUrl = 'https://www.carboninterface.com/api/v1';
+	
+	final Map<String, String> _headers = {
+		'Authorization': 'Bearer $_apiKey',
         'Content-Type': 'application/json',
     };
 
-	CarbonEstimateBroker() : url = Uri.parse('https://www.carboninterface.com/api/v1/estimates');
-
-	Future<Map<String, dynamic>> _fetch(Map<String, dynamic> body) async {
+	Future<Map<String, dynamic>> _fetch(HttpMethod method, Uri url, Map<String, dynamic>? body) async {
+		final http.Response response;
+		
 		try {
-			final http.Response response = await http.post(url, headers: headers, body: jsonEncode(body));
+
+			if (method == HttpMethod.get) {
+				response = await http.get(url, headers: _headers);
+			} else if (method == HttpMethod.post && body != null) {
+				response = await http.post(url, headers: _headers, body: jsonEncode(body));
+			} else {
+				throw Exception('Invalid HTTP call for method: "$method" with body: "$body"');
+			}
 
 			// Accept only strings in the format of "2xx" (successful responses)
 			if (RegExp(r'^2\d{2}$').hasMatch(response.statusCode.toString())) {
 				return jsonDecode(response.body);
 			} else {
-				throw Exception('Response gave: ${response.statusCode} status code: ${response.body}\n');
+				throw Exception('$url\n');
 			}
+
 		} catch (e) {
-			throw Exception('Error while making POST request: $e\n');
+			throw Exception('Error while making $method request: $e\n');
 		}
+	}
+
+	Future<Map<String, dynamic>> getManifacturers() async {
+		return _fetch(HttpMethod.get, Uri.parse('$_baseUrl/vehicle_makes'), null);
+	}
+
+	Future<Map<String, dynamic>> getVehicleModels(String manifacturer) async {
+		return _fetch(HttpMethod.get, Uri.parse('$_baseUrl/vehicle_makes/$manifacturer/vehicle_models'), null);
+	}
+
+	Future<Map<String, dynamic>> getFuelSources() async {
+		return _fetch(HttpMethod.get, Uri.parse('$_baseUrl/fuel_sources'), null);
 	}
 
 	Future<Map<String, dynamic>> fetchElectricityEstimates({
@@ -43,7 +65,7 @@ class CarbonEstimateBroker {
 			'state': state,
     	};
 
-		return _fetch(body);
+		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
 	}
 
 	Future<Map<String, dynamic>> fetchFlightEstimates({
@@ -68,7 +90,7 @@ class CarbonEstimateBroker {
 			if (distanceUnit != null) 'distance_unit': distanceUnit
     	};
 
-		return _fetch(body);
+		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
 	}
 
 	Future<Map<String, dynamic>> fetchShippingEstimates({
@@ -89,7 +111,7 @@ class CarbonEstimateBroker {
 			'transport_method': transportMethod
     	};
 
-		return _fetch(body);
+		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
 	}
 
 	Future<Map<String, dynamic>> fetchVehicleEstimates({
@@ -106,7 +128,7 @@ class CarbonEstimateBroker {
 			'vehicle_model_id': veichleModelId
     	};
 
-		return _fetch(body);
+		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
 	}
 
 	Future<Map<String, dynamic>> fetchFuelCombustionEstimates({
@@ -123,6 +145,6 @@ class CarbonEstimateBroker {
 			'fuel_source_value': fuelSourceValue
     	};
 
-		return _fetch(body);
+		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
 	}
 }
