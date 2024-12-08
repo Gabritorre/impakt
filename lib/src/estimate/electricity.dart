@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:impakt/src/api/broker.dart';
 
 class ElectricityEstimationView extends StatefulWidget  {
@@ -7,11 +6,14 @@ class ElectricityEstimationView extends StatefulWidget  {
 	static const routeName = '/electricity_estimation';
 	
 	@override
-	ElectricityEstimationViewState createState() => ElectricityEstimationViewState();
+	State<ElectricityEstimationView> createState() => _ElectricityEstimationViewState();
 }
 
-class ElectricityEstimationViewState extends State<ElectricityEstimationView> {
-	String responseJson = '';
+class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
+	String? estimate;
+	String? error;
+	String carbonUnit = 'kg';
+	
 
 	// On first widget's render
 	@override
@@ -20,17 +22,18 @@ class ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 		WidgetsBinding.instance.addPostFrameCallback((_) {
 			final broker = CarbonEstimateBroker();
 			broker.fetchElectricityEstimates(
+				electricityValue: 42.0,
 				country: 'us',
-				state: 'fl',
 				electricityUnit: 'mwh',
-				electricityValue: 42.0
+				state: 'fl',
 			).then((response) {
 				setState(() {
-					responseJson = jsonEncode(response);
+					String measure = 'carbon_$carbonUnit';
+					estimate = response['data']['attributes'][measure].toString();
 				});
 			}).catchError((error){
 				setState(() {
-				  responseJson = 'Error: $error';
+					this.error = 'Error: $error';
 				});
 			});
 		});
@@ -43,7 +46,17 @@ class ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 				title: const Text('Electricity Estimation'),
 			),
 			body: Center(
-				child: Text(responseJson.isEmpty ? 'Loading...' : responseJson)
+				child: Builder(
+					builder: (context) {
+						if (error != null) {
+							return Text(error!);
+						} else if (estimate != null) {
+							return Text('$estimate $carbonUnit');
+						} else {
+							return const CircularProgressIndicator();
+						}
+					},
+				),
 			),
 		);
 	}
