@@ -48,33 +48,38 @@ class _MainViewState extends State<MainView> {
 
 	@override
 	Widget build(BuildContext context) {
-		return Scaffold(
-			body: IndexedStack(
-				index: currentIndex,
-				children: <Widget>[
-					_buildNavigatorFor(_navigatorKeys[0], HomePage.routeName),
-					_buildNavigatorFor(_navigatorKeys[1], EstimationListView.routeName),
-					_buildNavigatorFor(_navigatorKeys[2], SettingsView.routeName),
-				],
-			),
-			bottomNavigationBar: BottomNavigationBar(
-				items: const <BottomNavigationBarItem>[
-					BottomNavigationBarItem(
-						icon: Icon(Icons.home),
-						label: 'Home',
-					),
-					BottomNavigationBarItem(
-						icon: Icon(Icons.info),
-						label: 'Info',
-					),
-					BottomNavigationBarItem(
-						icon: Icon(Icons.settings),
-						label: 'Settings',
-					),
-				],
-				currentIndex: currentIndex,
-				selectedItemColor: Colors.amber[800],
-				onTap: _onItemTapped,
+		return GestureDetector(
+			onTap: () {
+				FocusScope.of(context).requestFocus(FocusNode());
+			},
+			child: Scaffold(
+				body: IndexedStack(
+					index: currentIndex,
+					children: <Widget>[
+						_buildNavigatorFor(_navigatorKeys[0], HomePage.routeName),
+						_buildNavigatorFor(_navigatorKeys[1], EstimationListView.routeName),
+						_buildNavigatorFor(_navigatorKeys[2], SettingsView.routeName),
+					],
+				),
+				bottomNavigationBar: BottomNavigationBar(
+					items: const <BottomNavigationBarItem>[
+						BottomNavigationBarItem(
+							icon: Icon(Icons.home),
+							label: 'Home',
+						),
+						BottomNavigationBarItem(
+							icon: Icon(Icons.info),
+							label: 'Info',
+						),
+						BottomNavigationBarItem(
+							icon: Icon(Icons.settings),
+							label: 'Settings',
+						),
+					],
+					currentIndex: currentIndex,
+					selectedItemColor: Colors.amber[800],
+					onTap: _onItemTapped,
+				),
 			),
 		);
 	}
