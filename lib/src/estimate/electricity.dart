@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:impakt/src/api/broker.dart';
 
 //placeholder list of countries
-List<String> countries = [
-	'Italy',
-	'USA',
-	'Germany',
-	'Canada',
-	'Australia',
-	'China',
-	'Japan',
-	'Brazil',
-	'Russia',
-	'South Africa',
-	'Mexico',
-	'Argentina',
-	'France',
-	'United Kingdom',
-	'Republic of Korea',
-	'Saudi Arabia',
-	'India'
-];
+Map<String, String> countries = {
+	'it': 'Italy',
+	'us': 'USA',
+	'de': 'Germany',
+	'ca': 'Canada',
+	'au': 'Australia',
+	'cn': 'China',
+	'jp': 'Japan',
+	'br': 'Brazil',
+	'ru': 'Russia',
+	'za': 'South Africa',
+	'mx': 'Mexico',
+	'ar': 'Argentina',
+	'fr': 'France',
+	'gb': 'United Kingdom',
+	'kr': 'Republic of Korea',
+	'sa': 'Saudi Arabia',
+	'in': 'India',
+};
 
 
 class ElectricityEstimationView extends StatefulWidget  {
@@ -35,19 +35,20 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 	String? estimate;
 	String? error;
 	String carbonUnit = 'kg';
-	
 
-	// On first widget's render
-	@override
-	void initState() {
-		super.initState();
+	final _formKey = GlobalKey<FormState>();
+	String? selectedCountry;
+	double? electricityValue;
+	final TextEditingController countryController = TextEditingController();
+
+	void estimateElectricity(electricityValue, country) {
 		WidgetsBinding.instance.addPostFrameCallback((_) {
 			final broker = CarbonEstimateBroker();
 			broker.fetchElectricityEstimates(
-				electricityValue: 42.0,
-				country: 'us',
+				electricityValue: electricityValue,
+				country: country,
 				electricityUnit: 'mwh',
-				state: 'fl',
+				// state: 'fl',
 			).then((response) {
 				setState(() {
 					String measure = 'carbon_$carbonUnit';
@@ -72,105 +73,94 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 				child: Column(
 					mainAxisSize: MainAxisSize.min,
 					children: [
-						const MyForm(),
+						Form(
+							key: _formKey,
+							child: Column(
+								children: [
+									const SizedBox(height: 10),
+									Padding(
+										padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+										child: TextFormField(
+											keyboardType: TextInputType.number,
+											decoration: const InputDecoration(
+												labelText: 'Electricity consumption',
+												border: UnderlineInputBorder(),
+												suffix : Text(
+													'kWh',
+													textAlign: TextAlign.center,
+													style: TextStyle(
+														fontSize: 18,
+														fontWeight: FontWeight.bold,
+														color: Color.fromARGB(255, 155, 155, 155),
+													),
+												),
+											),
+											validator: (value) {
+												if (value == null || value.isEmpty) {
+													return 'Field required';
+												}
+												electricityValue = double.tryParse(value);
+												return null;
+											},
+										),
+									),
+									const SizedBox(height: 20),
+									Padding(
+										padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+										child: DropdownMenu(
+											controller: countryController,
+											width: double.infinity,
+											enableFilter: true,
+											enableSearch: false,
+											requestFocusOnTap: true,
+											label: const Text('Country'),
+											onSelected: (String? country) {
+												selectedCountry = country;
+											},
+											dropdownMenuEntries: countries.entries.map<DropdownMenuEntry<String>>(
+												(MapEntry<String, String> country) {
+													return DropdownMenuEntry<String>(
+														value: country.key,
+														label: country.value,
+													);
+												},
+											).toList(),
+										),
+									),
+									ElevatedButton(
+										onPressed: () {
+											if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedCountry == null ) {
+												ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invalid form')));
+											}
+											else {
+												setState(() {
+													estimate = null;
+												});
+												estimateElectricity(electricityValue, selectedCountry);
+											}
+										},
+										child: const Text('Estimate'),
+									),
+								],
+							),
+						),
 						Builder(
 							builder: (context) {
 								if (error != null) {
 									return Text(error!);
 								} else if (estimate != null) {
 									return Text('$estimate $carbonUnit');
-								} else {
+								} 
+								else if (estimate == null && selectedCountry == null && electricityValue == null) {
+									return const SizedBox(height: 0);
+								}
+								else {
 									return const CircularProgressIndicator();
 								}
 							},
 						),
 					],
 				),
-			),
-		);
-	}
-}
-
-
-
-class MyForm extends StatefulWidget {
-	const MyForm({super.key});
-
-	@override
-	State<MyForm> createState() => _MyFormState();
-}
-
-class _MyFormState extends State<MyForm> {
-	final _formKey = GlobalKey<FormState>();
-	String? _selectedCountry;
-	int? electricityValue;
-	final TextEditingController countryController = TextEditingController();
-
-	@override
-	Widget build(BuildContext context) {
-		return Form(
-			key: _formKey,
-			child: Column(
-				children: [
-					const SizedBox(height: 10),
-					Padding(
-						padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-						child: TextFormField(
-							keyboardType: TextInputType.number,
-							decoration: const InputDecoration(
-								labelText: 'Electricity consumption',
-								border: UnderlineInputBorder(),
-								suffix : Text(
-									'kWh',
-									textAlign: TextAlign.center,
-									style: TextStyle(
-										fontSize: 18,
-										fontWeight: FontWeight.bold,
-										color: Color.fromARGB(255, 155, 155, 155),
-									),
-								),
-							),
-							validator: (value) {
-								if (value == null || value.isEmpty) {
-									return 'Field required';
-								}
-								electricityValue = int.tryParse(value);
-								return null;
-							},
-						),
-					),
-					const SizedBox(height: 20),
-					Padding(
-						padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-						child: DropdownMenu(
-							controller: countryController,
-							width: double.infinity,
-							enableFilter: true,
-							enableSearch: false,
-							requestFocusOnTap: true,
-							label: const Text('Country'),
-							onSelected: (String? country) {
-								_selectedCountry = country;
-							},
-							dropdownMenuEntries: countries.map<DropdownMenuEntry<String>>(
-								(String country) {
-									return DropdownMenuEntry<String>(
-										value: country,
-										label: country,
-									);
-								},
-							).toList(),
-						),
-					),
-					ElevatedButton(
-						onPressed: () {
-							if (_formKey.currentState != null && !_formKey.currentState!.validate()) {
-								ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invalid form')));
-							}
-						},
-						child: const Text('Estimate'),
-					),
-				],
 			),
 		);
 	}
