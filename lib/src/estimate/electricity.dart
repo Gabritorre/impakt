@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:impakt/src/api/api.dart';
 import 'package:impakt/src/api/broker.dart';
 
-Map<String, String> countries = Broker.getCountries();
-
 class ElectricityEstimationView extends StatefulWidget  {
 	const ElectricityEstimationView({super.key});
 	static const routeName = '/electricity_estimation';
@@ -96,14 +94,7 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 											onSelected: (String? country) {
 												selectedCountry = country;
 											},
-											dropdownMenuEntries: countries.entries.map<DropdownMenuEntry<String>>(
-												(MapEntry<String, String> country) {
-													return DropdownMenuEntry<String>(
-														value: country.key,
-														label: country.value,
-													);
-												},
-											).toList(),
+											dropdownMenuEntries: Broker.getCountries().map(Option.asDropdownMenuEntry).toList(),
 										),
 									),
 									ElevatedButton(
