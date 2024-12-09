@@ -1,27 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:impakt/src/api/api.dart';
 import 'package:impakt/src/api/broker.dart';
 
-//placeholder list of countries
-Map<String, String> countries = {
-	'it': 'Italy',
-	'us': 'USA',
-	'de': 'Germany',
-	'ca': 'Canada',
-	'au': 'Australia',
-	'cn': 'China',
-	'jp': 'Japan',
-	'br': 'Brazil',
-	'ru': 'Russia',
-	'za': 'South Africa',
-	'mx': 'Mexico',
-	'ar': 'Argentina',
-	'fr': 'France',
-	'gb': 'United Kingdom',
-	'kr': 'Republic of Korea',
-	'sa': 'Saudi Arabia',
-	'in': 'India',
-};
-
+Map<String, String> countries = Broker.getCountries();
 
 class ElectricityEstimationView extends StatefulWidget  {
 	const ElectricityEstimationView({super.key});
@@ -43,12 +24,11 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 
 	void estimateElectricity(electricityValue, country) {
 		WidgetsBinding.instance.addPostFrameCallback((_) {
-			final broker = CarbonEstimateBroker();
-			broker.fetchElectricityEstimates(
+			final apiHandler = Api();
+			apiHandler.fetchElectricityEstimates(
 				electricityValue: electricityValue,
 				country: country,
 				electricityUnit: 'mwh',
-				// state: 'fl',
 			).then((response) {
 				setState(() {
 					String measure = 'carbon_$carbonUnit';

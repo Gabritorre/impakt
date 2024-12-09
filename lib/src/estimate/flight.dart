@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:impakt/src/api/broker.dart';
+import 'package:impakt/src/api/api.dart';
 
 class FlightEstimationView extends StatefulWidget  {
 	const FlightEstimationView({super.key});
@@ -20,8 +20,8 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 	void initState() {
 		super.initState();
 		WidgetsBinding.instance.addPostFrameCallback((_) {
-			final broker = CarbonEstimateBroker();
-			broker.fetchFlightEstimates(
+			final apiHandler = Api();
+			apiHandler.fetchFlightEstimates(
 				passengers: 42,
 				departureAirport: 'nce',
 				destinationAirport: 'arn',

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:impakt/src/api/broker.dart';
+import 'package:impakt/src/api/api.dart';
 
 class ShippingEstimationView extends StatefulWidget  {
 	const ShippingEstimationView({super.key});
@@ -20,8 +20,8 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 	void initState() {
 		super.initState();
 		WidgetsBinding.instance.addPostFrameCallback((_) {
-			final broker = CarbonEstimateBroker();
-			broker.fetchShippingEstimates(
+			final apiHandler = Api();
+			apiHandler.fetchShippingEstimates(
 				weightUnit: 'g',
 				weightValue: 200.0,
 				distanceUnit: 'mi',

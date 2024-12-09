@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:impakt/src/api/broker.dart';
+import 'package:impakt/src/api/api.dart';
 
 class FuelCombustionEstimationView extends StatefulWidget  {
 	const FuelCombustionEstimationView({super.key});
@@ -20,8 +20,8 @@ class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationV
 	void initState() {
 		super.initState();
 		WidgetsBinding.instance.addPostFrameCallback((_) {
-			final broker = CarbonEstimateBroker();
-			broker.fetchFuelCombustionEstimates(
+			final apiHandler = Api();
+			apiHandler.fetchFuelCombustionEstimates(
 				fuelSourceType: 'dfo',
 				fuelSourceUnit: 'btu',
 				fuelSourceValue: 42.0,
