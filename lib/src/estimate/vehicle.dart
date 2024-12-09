@@ -19,8 +19,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 	void initState() {
 		super.initState();
 		WidgetsBinding.instance.addPostFrameCallback((_) {
-			final apiHandler = Api();
-			apiHandler.fetchVehicleEstimates(
+			Api.fetchVehicleEstimates(
 				distanceUnit: 'mi',
 				distanceValue: 1000.0,
 				veichleModelId: 'f46c68e5-4b0d-4136-a8cd-ed103cc202d1'

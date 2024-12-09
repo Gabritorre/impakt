@@ -24,8 +24,7 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 
 	void estimateElectricity(electricityValue, country) {
 		WidgetsBinding.instance.addPostFrameCallback((_) {
-			final apiHandler = Api();
-			apiHandler.fetchElectricityEstimates(
+			Api.fetchElectricityEstimates(
 				electricityValue: electricityValue,
 				country: country,
 				electricityUnit: 'mwh',

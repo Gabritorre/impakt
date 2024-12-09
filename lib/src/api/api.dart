@@ -7,15 +7,15 @@ enum HttpMethod {get, post}
 class Api {
 	static final String _apiKey = dotenv.env['API_KEY']!;
 	static const String _baseUrl = 'https://www.carboninterface.com/api/v1';
-	
-	final Map<String, String> _headers = {
-		'Authorization': 'Bearer $_apiKey',
-        'Content-Type': 'application/json',
-    };
 
-	Future<Map<String, dynamic>> _fetch(HttpMethod method, Uri url, Map<String, dynamic>? body) async {
+	static final Map<String, String> _headers = {
+		'Authorization': 'Bearer $_apiKey',
+		'Content-Type': 'application/json',
+	};
+
+	static Future<Map<String, dynamic>> _fetch(HttpMethod method, Uri url, Map<String, dynamic>? body) async {
 		final http.Response response;
-		
+
 		try {
 
 			if (method == HttpMethod.get) {
@@ -38,19 +38,19 @@ class Api {
 		}
 	}
 
-	Future<Map<String, dynamic>> getManifacturers() async {
+	static Future<Map<String, dynamic>> getManifacturers() async {
 		return _fetch(HttpMethod.get, Uri.parse('$_baseUrl/vehicle_makes'), null);
 	}
 
-	Future<Map<String, dynamic>> getVehicleModels(String manifacturer) async {
+	static Future<Map<String, dynamic>> getVehicleModels(String manifacturer) async {
 		return _fetch(HttpMethod.get, Uri.parse('$_baseUrl/vehicle_makes/$manifacturer/vehicle_models'), null);
 	}
 
-	Future<Map<String, dynamic>> getFuelSources() async {
+	static Future<Map<String, dynamic>> getFuelSources() async {
 		return _fetch(HttpMethod.get, Uri.parse('$_baseUrl/fuel_sources'), null);
 	}
 
-	Future<Map<String, dynamic>> fetchElectricityEstimates({
+	static Future<Map<String, dynamic>> fetchElectricityEstimates({
 		required double electricityValue,
 		required String country,
 		String? electricityUnit,
@@ -67,7 +67,7 @@ class Api {
 		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
 	}
 
-	Future<Map<String, dynamic>> fetchFlightEstimates({
+	static Future<Map<String, dynamic>> fetchFlightEstimates({
 		required int passengers,
 		required String departureAirport,
 		required String destinationAirport,
@@ -92,7 +92,7 @@ class Api {
 		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
 	}
 
-	Future<Map<String, dynamic>> fetchShippingEstimates({
+	static Future<Map<String, dynamic>> fetchShippingEstimates({
 		required String weightUnit,
 		required double weightValue,
 		required String distanceUnit,
@@ -113,7 +113,7 @@ class Api {
 		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
 	}
 
-	Future<Map<String, dynamic>> fetchVehicleEstimates({
+	static Future<Map<String, dynamic>> fetchVehicleEstimates({
 		required String distanceUnit,
 		required double distanceValue,
 		required String veichleModelId
@@ -130,7 +130,7 @@ class Api {
 		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
 	}
 
-	Future<Map<String, dynamic>> fetchFuelCombustionEstimates({
+	static Future<Map<String, dynamic>> fetchFuelCombustionEstimates({
 		required String fuelSourceType,
 		required String fuelSourceUnit,
 		required double fuelSourceValue

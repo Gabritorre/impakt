@@ -20,8 +20,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 	void initState() {
 		super.initState();
 		WidgetsBinding.instance.addPostFrameCallback((_) {
-			final apiHandler = Api();
-			apiHandler.fetchFlightEstimates(
+			Api.fetchFlightEstimates(
 				passengers: 42,
 				departureAirport: 'nce',
 				destinationAirport: 'arn',
