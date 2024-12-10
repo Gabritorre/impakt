@@ -39,10 +39,6 @@ class Api {
 		}
 	}
 
-	static Future<dynamic> getManufacturer() async {
-		return await fetch(HttpMethod.get, '/vehicle_makes');
-	}
-
 	static Future<dynamic> getVehicleModels(String manufacturer) async {
 		return await fetch(HttpMethod.get, '/vehicle_makes/$manufacturer/vehicle_models');
 	}
