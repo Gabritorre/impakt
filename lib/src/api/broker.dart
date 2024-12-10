@@ -10,6 +10,15 @@ class Option {
 }
 
 class Broker {
+	static Future<List<Option>> getAirports() async {
+		return jsonDecode(await rootBundle.loadString('assets/airports.json'))
+			.map((entry) {
+				final name = entry['name']!, municipality = entry['municipality']!, iata = entry['iata_code']!;
+				final label = '$name${name.isNotEmpty && municipality.isNotEmpty ? ', ' : ''}$municipality ($iata)';
+				return Option(iata, label);
+			})
+			.cast<Option>()
+			.toList();
 	}
 
 	static List<Option> getCountries() {
