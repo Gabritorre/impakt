@@ -23,11 +23,10 @@ class Broker {
 
 	static List<Option> getCountries() {
 		return [
-			['us', 'United States of America'],
-			['ca', 'Canada'],
 			['at', 'Austria'],
 			['be', 'Belgium'],
 			['bg', 'Bulgaria'],
+			['ca', 'Canada'],
 			['hr', 'Croatia'],
 			['cy', 'Cyprus'],
 			['cz', 'Czechia'],
@@ -52,6 +51,7 @@ class Broker {
 			['si', 'Slovenia'],
 			['es', 'Spain'],
 			['se', 'Sweden'],
+			['us', 'United States of America'],
 			['gb', 'United Kingdom']
 		].map((entry) => Option(entry[0], entry[1])).toList();
 	}
