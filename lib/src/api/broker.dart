@@ -5,7 +5,7 @@ import 'api.dart';
 class Broker {
 	static final Map<String, String> _vehicleManufacturers = {};
 
-	static Future<Map<String, String>?> getVehicleManufacturers() async {
+	static Future<Map<String, String>> getVehicleManufacturers() async {
 		if (_vehicleManufacturers.isEmpty) {
 			final response = await Api.fetch(HttpMethod.get, '/vehicle_makes');
 			for (final manufacturer in response) {
@@ -21,8 +21,8 @@ class Broker {
 		required String country
 	}) async {
 		const type = 'electricity';
-
-		String electricityUnit = 'mwh';	// TODO: Read from memory
+		final carbonUnit = Storage.getSavedUnits()['carbon'];
+		final electricityUnit = Storage.getSavedUnits()['electricity'];
 
 		final Map<String, dynamic> body = {
 			'type': type,
@@ -32,7 +32,7 @@ class Broker {
 		};
 
 		final response = await Api.fetch(HttpMethod.post, '/estimates', body);
-		final estimate = response['data']['attributes']['carbon_${Storage.getCarbonUnit()}'];
+		final estimate = response['data']['attributes']['carbon_$carbonUnit'];
 		return estimate.toString();
 	}
 }

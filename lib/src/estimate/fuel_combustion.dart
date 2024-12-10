@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:impakt/src/api/api.dart';
+import 'package:impakt/src/api/storage.dart';
 
 class FuelCombustionEstimationView extends StatefulWidget  {
 	const FuelCombustionEstimationView({super.key});
@@ -12,7 +13,6 @@ class FuelCombustionEstimationView extends StatefulWidget  {
 class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationView> {
 	String? estimate;
 	String? error;
-	String carbonUnit = 'kg';
 	
 
 	// On first widget's render
@@ -26,7 +26,7 @@ class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationV
 				fuelSourceValue: 42.0,
 			).then((response) {
 				setState(() {
-					String measure = 'carbon_$carbonUnit';
+					String measure = 'carbon_${Storage.getSavedUnits()['carbon']}';
 					estimate = response['data']['attributes'][measure].toString();
 				});
 			}).catchError((error){
@@ -49,7 +49,7 @@ class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationV
 						if (error != null) {
 							return Text(error!);
 						} else if (estimate != null) {
-							return Text('$estimate $carbonUnit');
+							return Text('$estimate ${Storage.getSavedUnits()['carbon']}');
 						} else {
 							return const CircularProgressIndicator();
 						}

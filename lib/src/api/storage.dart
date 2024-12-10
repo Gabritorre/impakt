@@ -10,8 +10,18 @@ class Option {
 }
 
 class Storage {
-	static String getCarbonUnit() {
-		return 'kg';	// TODO: Read from memory
+	static Map<String, String> getSavedUnits() {
+		return {
+			'electricity': 'kwh',
+			'distance': 'km',
+			'weight': 'kg',
+			'fuel_source': 'btu',
+			'carbon': 'kg'
+		};	// TODO: Read from memory or (if missing) default to it
+	}
+
+	static void setSavedUnits(/* ... */) {
+		// TODO: Save given units to storage
 	}
 
 	static Future<List<Option>> getAirports() async {

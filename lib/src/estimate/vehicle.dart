@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:impakt/src/api/api.dart';
 
+import '../api/storage.dart';
+
 class VehicleEstimationView extends StatefulWidget  {
 	const VehicleEstimationView({super.key});
 	static const routeName = '/vehicle_estimation';
@@ -12,7 +14,6 @@ class VehicleEstimationView extends StatefulWidget  {
 class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 	String? estimate;
 	String? error;
-	String carbonUnit = 'kg';
 
 	// On first widget's render
 	@override
@@ -25,7 +26,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 				veichleModelId: 'f46c68e5-4b0d-4136-a8cd-ed103cc202d1'
 			).then((response) {
 				setState(() {
-					String measure = 'carbon_$carbonUnit';
+					String measure = 'carbon_${Storage.getSavedUnits()['carbon']}';
 					estimate = response['data']['attributes'][measure].toString();
 				});
 			}).catchError((error){
@@ -48,7 +49,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 						if (error != null) {
 							return Text(error!);
 						} else if (estimate != null) {
-							return Text('$estimate $carbonUnit');
+							return Text('$estimate ${Storage.getSavedUnits()['carbon']}');
 						} else {
 							return const CircularProgressIndicator();
 						}

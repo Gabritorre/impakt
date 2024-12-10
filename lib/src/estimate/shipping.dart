@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:impakt/src/api/api.dart';
 
+import '../api/storage.dart';
+
 class ShippingEstimationView extends StatefulWidget  {
 	const ShippingEstimationView({super.key});
 	static const routeName = '/shipping_estimation';
@@ -12,7 +14,6 @@ class ShippingEstimationView extends StatefulWidget  {
 class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 	String? estimate;
 	String? error;
-	String carbonUnit = 'kg';
 	
 
 	// On first widget's render
@@ -28,7 +29,7 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 				transportMethod: 'truck'
 			).then((response) {
 				setState(() {
-					String measure = 'carbon_$carbonUnit';
+					String measure = 'carbon_${Storage.getSavedUnits()['carbon']}';
 					estimate = response['data']['attributes'][measure].toString();
 				});
 			}).catchError((error){
@@ -51,7 +52,7 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 						if (error != null) {
 							return Text(error!);
 						} else if (estimate != null) {
-							return Text('$estimate $carbonUnit');
+							return Text('$estimate ${Storage.getSavedUnits()['carbon']}');
 						} else {
 							return const CircularProgressIndicator();
 						}
