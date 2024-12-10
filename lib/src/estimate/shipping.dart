@@ -20,7 +20,7 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 	void initState() {
 		super.initState();
 		WidgetsBinding.instance.addPostFrameCallback((_) {
-			Api.fetchShippingEstimates(
+			Api.getShippingEstimate(
 				weightUnit: 'g',
 				weightValue: 200.0,
 				distanceUnit: 'mi',

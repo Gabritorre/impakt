@@ -20,7 +20,7 @@ class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationV
 	void initState() {
 		super.initState();
 		WidgetsBinding.instance.addPostFrameCallback((_) {
-			Api.fetchFuelCombustionEstimates(
+			Api.getFuelCombustionEstimate(
 				fuelSourceType: 'dfo',
 				fuelSourceUnit: 'btu',
 				fuelSourceValue: 42.0,

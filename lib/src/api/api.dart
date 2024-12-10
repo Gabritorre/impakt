@@ -13,8 +13,9 @@ class Api {
 		'Content-Type': 'application/json',
 	};
 
-	static Future<Map<String, dynamic>> _fetch(HttpMethod method, Uri url, Map<String, dynamic>? body) async {
+	static Future<Map<String, dynamic>> fetch(HttpMethod method, String function, [Map<String, dynamic>? body]) async {
 		final http.Response response;
+		final url = Uri.parse('$_baseUrl/$function');
 
 		try {
 
@@ -38,36 +39,19 @@ class Api {
 		}
 	}
 
-	static Future<Map<String, dynamic>> getManifacturers() async {
-		return _fetch(HttpMethod.get, Uri.parse('$_baseUrl/vehicle_makes'), null);
+	static Future<Map<String, dynamic>> getManufacturer() async {
+		return fetch(HttpMethod.get, '/vehicle_makes');
 	}
 
-	static Future<Map<String, dynamic>> getVehicleModels(String manifacturer) async {
-		return _fetch(HttpMethod.get, Uri.parse('$_baseUrl/vehicle_makes/$manifacturer/vehicle_models'), null);
+	static Future<Map<String, dynamic>> getVehicleModels(String manufacturer) async {
+		return fetch(HttpMethod.get, '/vehicle_makes/$manufacturer/vehicle_models');
 	}
 
 	static Future<Map<String, dynamic>> getFuelSources() async {
-		return _fetch(HttpMethod.get, Uri.parse('$_baseUrl/fuel_sources'), null);
+		return fetch(HttpMethod.get, '/fuel_sources');
 	}
 
-	static Future<Map<String, dynamic>> fetchElectricityEstimates({
-		required double electricityValue,
-		required String country,
-		String? electricityUnit,
-	}) async {
-		const type = 'electricity';
-
-    	final Map<String, dynamic> body = {
-			'type': type,
-			'electricity_value': electricityValue,
-			'country': country,
-			if (electricityUnit != null) 'electricity_unit': electricityUnit,
-    	};
-
-		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
-	}
-
-	static Future<Map<String, dynamic>> fetchFlightEstimates({
+	static Future<Map<String, dynamic>> getFlightEstimate({
 		required int passengers,
 		required String departureAirport,
 		required String destinationAirport,
@@ -76,7 +60,7 @@ class Api {
 	}) async {
 		const type = 'flight';
 
-    	final Map<String, dynamic> body = {
+		final Map<String, dynamic> body = {
 			'type': type,
 			'passengers': passengers,
 			'legs': [
@@ -87,12 +71,12 @@ class Api {
 				}
 			],
 			if (distanceUnit != null) 'distance_unit': distanceUnit
-    	};
+		};
 
-		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
+		return fetch(HttpMethod.post, '/estimates', body);
 	}
 
-	static Future<Map<String, dynamic>> fetchShippingEstimates({
+	static Future<Map<String, dynamic>> getShippingEstimate({
 		required String weightUnit,
 		required double weightValue,
 		required String distanceUnit,
@@ -101,49 +85,49 @@ class Api {
 	}) async {
 		const type = 'shipping';
 
-    	final Map<String, dynamic> body = {
+		final Map<String, dynamic> body = {
 			'type': type,
 			'weight_unit': weightUnit,
 			'weight_value': weightValue,
 			'distance_unit': distanceUnit,
 			'distance_value': distanceValue,
 			'transport_method': transportMethod
-    	};
+		};
 
-		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
+		return fetch(HttpMethod.post, '/estimates', body);
 	}
 
-	static Future<Map<String, dynamic>> fetchVehicleEstimates({
+	static Future<Map<String, dynamic>> getVehicleEstimate({
 		required String distanceUnit,
 		required double distanceValue,
 		required String veichleModelId
 	}) async {
 		const type = 'vehicle';
 
-    	final Map<String, dynamic> body = {
+		final Map<String, dynamic> body = {
 			'type': type,
 			'distance_unit': distanceUnit,
 			'distance_value': distanceValue,
 			'vehicle_model_id': veichleModelId
-    	};
+		};
 
-		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
+		return fetch(HttpMethod.post, '/estimates', body);
 	}
 
-	static Future<Map<String, dynamic>> fetchFuelCombustionEstimates({
+	static Future<Map<String, dynamic>> getFuelCombustionEstimate({
 		required String fuelSourceType,
 		required String fuelSourceUnit,
 		required double fuelSourceValue
 	}) async {
 		const type = 'fuel_combustion';
 
-    	final Map<String, dynamic> body = {
+		final Map<String, dynamic> body = {
 			'type': type,
 			'fuel_source_type': fuelSourceType,
 			'fuel_source_unit': fuelSourceUnit,
 			'fuel_source_value': fuelSourceValue
-    	};
+		};
 
-		return _fetch(HttpMethod.post, Uri.parse('$_baseUrl/estimates'), body);
+		return fetch(HttpMethod.post, '/estimates', body);
 	}
 }

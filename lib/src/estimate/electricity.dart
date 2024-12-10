@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:impakt/src/api/api.dart';
 import 'package:impakt/src/api/broker.dart';
 
+import '../api/storage.dart';
+
 class ElectricityEstimationView extends StatefulWidget  {
 	const ElectricityEstimationView({super.key});
 	static const routeName = '/electricity_estimation';
@@ -13,7 +15,6 @@ class ElectricityEstimationView extends StatefulWidget  {
 class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 	String? estimate;
 	String? error;
-	String carbonUnit = 'kg';
 
 	final _formKey = GlobalKey<FormState>();
 	String? selectedCountry;
@@ -22,21 +23,16 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 
 	void estimateElectricity(electricityValue, country) {
 		print('Estimating electricity $electricityValue kWh in $country');
-		WidgetsBinding.instance.addPostFrameCallback((_) {
-			Api.fetchElectricityEstimates(
-				electricityValue: electricityValue,
-				country: country,
-				electricityUnit: 'mwh',
-			).then((response) {
-				setState(() {
-					String measure = 'carbon_$carbonUnit';
-					estimate = response['data']['attributes'][measure].toString();
-				});
-			}).catchError((error){
-				setState(() {
-					this.error = 'Error: $error';
-				});
-			});
+		WidgetsBinding.instance.addPostFrameCallback((_) async {
+			try {
+				final electricityEstimate = await Broker.getElectricityEstimate(
+					electricityValue: electricityValue,
+					country: country
+				);
+				setState(() => estimate = electricityEstimate);
+			} catch (error) {
+				setState(() => this.error = 'Error: $error');
+			}
 		});
 	}
 
@@ -119,7 +115,7 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 									return Padding(
 										padding: const EdgeInsets.symmetric(vertical: 15),
 										child:Text(
-											'$estimate $carbonUnit of CO2',
+											'$estimate ${Storage.getCarbonUnit()} of CO2',
 											textAlign: TextAlign.center,
 											style: const TextStyle(
 												fontSize: 23,
@@ -188,7 +184,7 @@ class CountrySelectorField extends StatelessWidget{
 			requestFocusOnTap: true,
 			label: const Text('Country'),
 			onSelected: onSelected,
-			dropdownMenuEntries: Broker.getCountries().map(Option.asDropdownMenuEntry).toList(),
+			dropdownMenuEntries: Storage.getCountries().map(Option.asDropdownMenuEntry).toList(),
 		);
 	}
 }
