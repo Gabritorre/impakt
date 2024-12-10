@@ -13,7 +13,7 @@ class Api {
 		'Content-Type': 'application/json',
 	};
 
-	static Future<Map<String, dynamic>> fetch(HttpMethod method, String function, [Map<String, dynamic>? body]) async {
+	static Future<dynamic> fetch(HttpMethod method, String function, [Map<String, dynamic>? body]) async {
 		final http.Response response;
 		final url = Uri.parse('$_baseUrl/$function');
 
@@ -39,19 +39,19 @@ class Api {
 		}
 	}
 
-	static Future<Map<String, dynamic>> getManufacturer() async {
-		return fetch(HttpMethod.get, '/vehicle_makes');
+	static Future<dynamic> getManufacturer() async {
+		return await fetch(HttpMethod.get, '/vehicle_makes');
 	}
 
-	static Future<Map<String, dynamic>> getVehicleModels(String manufacturer) async {
-		return fetch(HttpMethod.get, '/vehicle_makes/$manufacturer/vehicle_models');
+	static Future<dynamic> getVehicleModels(String manufacturer) async {
+		return await fetch(HttpMethod.get, '/vehicle_makes/$manufacturer/vehicle_models');
 	}
 
-	static Future<Map<String, dynamic>> getFuelSources() async {
-		return fetch(HttpMethod.get, '/fuel_sources');
+	static Future<dynamic> getFuelSources() async {
+		return await fetch(HttpMethod.get, '/fuel_sources');
 	}
 
-	static Future<Map<String, dynamic>> getFlightEstimate({
+	static Future<dynamic> getFlightEstimate({
 		required int passengers,
 		required String departureAirport,
 		required String destinationAirport,
@@ -73,10 +73,10 @@ class Api {
 			if (distanceUnit != null) 'distance_unit': distanceUnit
 		};
 
-		return fetch(HttpMethod.post, '/estimates', body);
+		return await fetch(HttpMethod.post, '/estimates', body);
 	}
 
-	static Future<Map<String, dynamic>> getShippingEstimate({
+	static Future<dynamic> getShippingEstimate({
 		required String weightUnit,
 		required double weightValue,
 		required String distanceUnit,
@@ -94,10 +94,10 @@ class Api {
 			'transport_method': transportMethod
 		};
 
-		return fetch(HttpMethod.post, '/estimates', body);
+		return await fetch(HttpMethod.post, '/estimates', body);
 	}
 
-	static Future<Map<String, dynamic>> getVehicleEstimate({
+	static Future<dynamic> getVehicleEstimate({
 		required String distanceUnit,
 		required double distanceValue,
 		required String veichleModelId
@@ -111,10 +111,10 @@ class Api {
 			'vehicle_model_id': veichleModelId
 		};
 
-		return fetch(HttpMethod.post, '/estimates', body);
+		return await fetch(HttpMethod.post, '/estimates', body);
 	}
 
-	static Future<Map<String, dynamic>> getFuelCombustionEstimate({
+	static Future<dynamic> getFuelCombustionEstimate({
 		required String fuelSourceType,
 		required String fuelSourceUnit,
 		required double fuelSourceValue
@@ -128,6 +128,6 @@ class Api {
 			'fuel_source_value': fuelSourceValue
 		};
 
-		return fetch(HttpMethod.post, '/estimates', body);
+		return await fetch(HttpMethod.post, '/estimates', body);
 	}
 }
