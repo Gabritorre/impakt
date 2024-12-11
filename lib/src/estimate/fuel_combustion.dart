@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:impakt/src/api/api.dart';
+import 'package:impakt/src/api/broker.dart';
 import 'package:impakt/src/api/storage.dart';
 
 class FuelCombustionEstimationView extends StatefulWidget  {
@@ -19,21 +19,16 @@ class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationV
 	@override
 	void initState() {
 		super.initState();
-		WidgetsBinding.instance.addPostFrameCallback((_) {
-			Api.getFuelCombustionEstimate(
-				fuelSourceType: 'dfo',
-				fuelSourceUnit: 'btu',
-				fuelSourceValue: 42.0,
-			).then((response) {
-				setState(() {
-					String measure = 'carbon_${Storage.getSavedUnits()['carbon']}';
-					estimate = response['data']['attributes'][measure].toString();
-				});
-			}).catchError((error){
-				setState(() {
-					this.error = 'Error: $error';
-				});
-			});
+		WidgetsBinding.instance.addPostFrameCallback((_) async {
+			try {
+				final fuelCombustionEstimate = await Broker.getFuelCombustionEstimate(
+					fuelSourceType: 'dfo',
+					fuelSourceValue: 42.0
+				);
+				setState(() => estimate = fuelCombustionEstimate);
+			} catch (error) {
+				setState(() => this.error = 'Error: $error');
+			}
 		});
 	}
 

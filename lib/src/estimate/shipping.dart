@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:impakt/src/api/api.dart';
+import 'package:impakt/src/api/broker.dart';
 
 import '../api/storage.dart';
 
@@ -20,23 +20,17 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 	@override
 	void initState() {
 		super.initState();
-		WidgetsBinding.instance.addPostFrameCallback((_) {
-			Api.getShippingEstimate(
-				weightUnit: 'g',
-				weightValue: 200.0,
-				distanceUnit: 'mi',
-				distanceValue: 2000.0,
-				transportMethod: 'truck'
-			).then((response) {
-				setState(() {
-					String measure = 'carbon_${Storage.getSavedUnits()['carbon']}';
-					estimate = response['data']['attributes'][measure].toString();
-				});
-			}).catchError((error){
-				setState(() {
-					this.error = 'Error: $error';
-				});
-			});
+		WidgetsBinding.instance.addPostFrameCallback((_) async{
+			try {
+				final shippingEstimate = await Broker.getShippingEstimate(
+					weightValue: 200.0,
+					distanceValue: 2000.0,
+					transportMethod: 'truck'
+				);
+				setState(() => estimate = shippingEstimate);
+			} catch (error) {
+				setState(() => this.error = 'Error: $error');
+			}
 		});
 	}
 

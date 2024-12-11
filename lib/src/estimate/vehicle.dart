@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:impakt/src/api/api.dart';
+import 'package:impakt/src/api/broker.dart';
 
 import '../api/storage.dart';
 
@@ -19,21 +19,16 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 	@override
 	void initState() {
 		super.initState();
-		WidgetsBinding.instance.addPostFrameCallback((_) {
-			Api.getVehicleEstimate(
-				distanceUnit: 'mi',
-				distanceValue: 1000.0,
-				veichleModelId: 'f46c68e5-4b0d-4136-a8cd-ed103cc202d1'
-			).then((response) {
-				setState(() {
-					String measure = 'carbon_${Storage.getSavedUnits()['carbon']}';
-					estimate = response['data']['attributes'][measure].toString();
-				});
-			}).catchError((error){
-				setState(() {
-					this.error = 'Error: $error';
-				});
-			});
+		WidgetsBinding.instance.addPostFrameCallback((_) async {
+			try {
+				final vehicleEstimate = await Broker.getVehicleEstimate(
+					distanceValue: 1000.0,
+					veichleModelId: 'f46c68e5-4b0d-4136-a8cd-ed103cc202d1'
+				);
+				setState(() => estimate = vehicleEstimate);
+			} catch (error) {
+				setState(() => this.error = 'Error: $error');
+			}
 		});
 	}
 

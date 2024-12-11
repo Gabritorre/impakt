@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:impakt/src/api/api.dart';
+import 'package:impakt/src/api/broker.dart';
 
 import '../api/storage.dart';
 
@@ -20,23 +20,18 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 	@override
 	void initState() {
 		super.initState();
-		WidgetsBinding.instance.addPostFrameCallback((_) {
-			Api.getFlightEstimate(
-				passengers: 42,
-				departureAirport: 'nce',
-				destinationAirport: 'arn',
-				distanceUnit: 'km',
-				cabinClass: 'economy'
-			).then((response) {
-				setState(() {
-					String measure = 'carbon_${Storage.getSavedUnits()['carbon']}';
-					estimate = response['data']['attributes'][measure].toString();
-				});
-			}).catchError((error){
-				setState(() {
-					this.error = 'Error: $error';
-				});
-			});
+		WidgetsBinding.instance.addPostFrameCallback((_) async {
+			try {
+				final flightEstimate = await Broker.getFlightEstimate(
+					passengers: 42,
+					departureAirport: 'nce',
+					destinationAirport: 'arn',
+					cabinClass: 'economy'
+				);
+				setState(() => estimate = flightEstimate);
+			} catch (error) {
+				setState(() => this.error = 'Error: $error');
+			}
 		});
 	}
 
