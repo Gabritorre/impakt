@@ -46,7 +46,8 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 						if (error != null) {
 							return Text(error!);
 						} else if (estimate != null) {
-							return Text('$estimate ${Storage.getSavedUnits()['carbon']}');
+							//return Text('$estimate ${Storage.getSavedUnits()['carbon']}');
+							return Text("why yes, i start a thread each time i need to get a string, how could you tell?");
 						} else {
 							return const CircularProgressIndicator();
 						}

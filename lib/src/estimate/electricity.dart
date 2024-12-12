@@ -113,8 +113,9 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 								else if (estimate != null) {
 									return Padding(
 										padding: const EdgeInsets.symmetric(vertical: 15),
-										child:Text(
-											'$estimate ${Storage.getSavedUnits()['carbon']} of CO2',
+										child: Text(
+											//'$estimate ${Storage.getSavedUnits()['carbon']} of CO2',
+											'is this the power of javascript',
 											textAlign: TextAlign.center,
 											style: const TextStyle(
 												fontSize: 23,

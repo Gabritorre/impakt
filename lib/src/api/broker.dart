@@ -31,8 +31,9 @@ class Broker {
 		required String country
 	}) async {
 		const type = 'electricity';
-		final carbonUnit = Storage.getSavedUnits()['carbon'];
-		final electricityUnit = Storage.getSavedUnits()['electricity'];
+		final units = await Storage.getSavedUnits();
+		final carbonUnit = units['carbon'];
+		final electricityUnit = units['electricity'];
 
 		final Map<String, dynamic> body = {
 			'type': type,
@@ -53,8 +54,9 @@ class Broker {
 		String? cabinClass
 	}) async {
 		const type = 'flight';
-		final carbonUnit = Storage.getSavedUnits()['carbon'];
-		final distanceUnit = Storage.getSavedUnits()['distance'];
+		final units = await Storage.getSavedUnits();
+		final carbonUnit = units['carbon'];
+		final distanceUnit = units['distance'];
 
 		final Map<String, dynamic> body = {
 			'type': type,
@@ -80,9 +82,10 @@ class Broker {
 		required String transportMethod
 	}) async {
 		const type = 'shipping';
-		final carbonUnit = Storage.getSavedUnits()['carbon'];
-		final weightUnit = Storage.getSavedUnits()['weight'];
-		final distanceUnit = Storage.getSavedUnits()['distance'];
+		final units = await Storage.getSavedUnits();
+		final carbonUnit = units['carbon'];
+		final weightUnit = units['weight'];
+		final distanceUnit = units['distance'];
 
 		final Map<String, dynamic> body = {
 			'type': type,
@@ -103,8 +106,9 @@ class Broker {
 		required String veichleModelId
 	}) async {
 		const type = 'vehicle';
-		final carbonUnit = Storage.getSavedUnits()['carbon'];
-		final distanceUnit = Storage.getSavedUnits()['distance'];
+		final units = await Storage.getSavedUnits();
+		final carbonUnit = units['carbon'];
+		final distanceUnit = units['distance'];
 
 		final Map<String, dynamic> body = {
 			'type': type,
@@ -123,8 +127,9 @@ class Broker {
 		required double fuelSourceValue
 	}) async {
 		const type = 'fuel_combustion';
-		final carbonUnit = Storage.getSavedUnits()['carbon'];
-		final fuelSourceUnit = Storage.getSavedUnits()['fuel_source'];
+		final units = await Storage.getSavedUnits();
+		final carbonUnit = units['carbon'];
+		final fuelSourceUnit = units['fuel_source'];
 
 		final Map<String, dynamic> body = {
 			'type': type,

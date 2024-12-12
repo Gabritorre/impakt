@@ -44,7 +44,8 @@ class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationV
 						if (error != null) {
 							return Text(error!);
 						} else if (estimate != null) {
-							return Text('$estimate ${Storage.getSavedUnits()['carbon']}');
+							//return Text('$estimate ${Storage.getSavedUnits()['carbon']}');
+							return Text('please wait while i search for the punch card containing the string you asked for');
 						} else {
 							return const CircularProgressIndicator();
 						}

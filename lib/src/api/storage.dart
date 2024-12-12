@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Option {
 	final String code, label;
@@ -10,18 +11,27 @@ class Option {
 }
 
 class Storage {
-	static Map<String, String> getSavedUnits() {
-		return {
-			'electricity': 'kwh',
-			'distance': 'km',
-			'weight': 'kg',
-			'fuel_source': 'btu',
-			'carbon': 'kg'
-		};	// TODO: Read from memory or (if missing) default to it
+	static Future<Map<String, String>> getSavedUnits() async {
+		Map<String, String> units;
+		final preferences = await SharedPreferences.getInstance();
+		if (preferences.containsKey('units')) {
+			units = Map.from(jsonDecode(preferences.getString('units')!));
+		} else {
+			units = {
+				'electricity': 'kwh',
+				'distance': 'km',
+				'weight': 'kg',
+				'fuel_source': 'btu',
+				'carbon': 'kg'
+			};
+		}
+		return units;
 	}
 
-	static void setSavedUnits(/* ... */) {
-		// TODO: Save given units to storage
+	static Future<void> setSavedUnits(Map<String, String> units) async {
+		final saved = await getSavedUnits();
+		saved.addAll(units);
+		await (await SharedPreferences.getInstance()).setString('units', jsonEncode(saved));
 	}
 
 	static Future<Map<String, Map<String, String>>> getInfos() async {

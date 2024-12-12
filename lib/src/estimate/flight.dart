@@ -199,7 +199,8 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 									return Padding(
 										padding: const EdgeInsets.symmetric(vertical: 15),
 										child:Text(
-											'$estimate ${Storage.getSavedUnits()['carbon']} of CO2',
+											//'$estimate ${Storage.getSavedUnits()['carbon']} of CO2',
+											'bro literally cant wait a millisecond to get the fucking units',
 											textAlign: TextAlign.center,
 											style: const TextStyle(
 												fontSize: 23,

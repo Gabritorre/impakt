@@ -44,7 +44,8 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 						if (error != null) {
 							return Text(error!);
 						} else if (estimate != null) {
-							return Text('$estimate ${Storage.getSavedUnits()['carbon']}');
+							//return Text('$estimate ${Storage.getSavedUnits()['carbon']}');
+							return Text('imagine reading storage asynchronously in 2024');
 						} else {
 							return const CircularProgressIndicator();
 						}
