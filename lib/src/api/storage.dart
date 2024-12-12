@@ -24,15 +24,20 @@ class Storage {
 		// TODO: Save given units to storage
 	}
 
+	static Future<Map<String, Map<String, String>>> getInfos() async {
+		return (jsonDecode(await rootBundle.loadString('assets/infos.json')) as Map<String, dynamic>)
+			.map((key, value) => MapEntry(key, Map<String, String>.from(value)));
+	}
+
 	static Future<List<Option>> getAirports() async {
-		return jsonDecode(await rootBundle.loadString('assets/airports.json'))
-		.map((entry) {
-			final name = entry['name']!, municipality = entry['municipality']!, iata = entry['iata_code']!;
-			final label = '$name${name.isNotEmpty && municipality.isNotEmpty ? ', ' : ''}$municipality ($iata)';
-			return Option(iata, label);
-		})
-		.cast<Option>()
-		.toList();
+		return (jsonDecode(await rootBundle.loadString('assets/airports.json')) as List<dynamic>)
+			.map((entry) {
+				final name = entry['name']!, municipality = entry['municipality']!, iata = entry['iata_code']!;
+				final label = '$name${name.isNotEmpty && municipality.isNotEmpty ? ', ' : ''}$municipality ($iata)';
+				return Option(iata, label);
+			})
+			.cast<Option>()
+			.toList();
 	}
 
 	static List<Option> getCountries() {
