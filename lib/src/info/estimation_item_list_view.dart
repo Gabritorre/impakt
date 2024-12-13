@@ -7,11 +7,37 @@ import 'estimation_item_details_view.dart';
 class EstimationListView extends StatelessWidget {
 	const EstimationListView({
 		super.key,
-		this.items = const [EstimationItem("Electricity"), EstimationItem("Flight"), EstimationItem("Fuel Combustion"), EstimationItem("Shipping"), EstimationItem("Vehicle")],
+		this.items = const [EstimationItem('Electricity'), EstimationItem('Flight'), EstimationItem('Fuel Combustion'), EstimationItem('Shipping'), EstimationItem('Vehicle')],
 	});
 
 	static const routeName = '/estimation_list';
 	final List<EstimationItem> items;
+
+	static CircleAvatar getAvatarForEstimation(String type) {
+		IconData icon;
+		
+		switch (type) {
+			case 'Electricity':
+				icon = Icons.electric_bolt;
+			case 'Flight':
+				icon = Icons.flight;
+			case 'Fuel Combustion':
+				icon = Icons.oil_barrel;
+			case 'Shipping':
+				icon = Icons.local_shipping;
+			case 'Vehicle':
+				icon = Icons.directions_car;
+			default:
+				icon = Icons.info;
+		}
+
+		return CircleAvatar(
+			child: Icon(
+				icon,
+				color: Colors.white,
+			),
+		);
+	}
 
 	@override
 	Widget build(BuildContext context) {
@@ -37,17 +63,14 @@ class EstimationListView extends StatelessWidget {
 
 					return ListTile(
 						title: Text('${item.type} estimation'),
-						leading: const CircleAvatar(
-						// Display the Flutter Logo image asset.
-						foregroundImage: AssetImage('assets/images/flutter_logo.png'),
-						),
+						leading: getAvatarForEstimation(item.type),
 						onTap: () {
 							// Navigate to the details page. If the user leaves and returns to
 							// the app after it has been killed while running in the
 							// background, the navigation stack is restored.
-							Navigator.restorablePushNamed(
+							Navigator.push(
 								context,
-								EstimationItemDetailsView.routeName,
+								MaterialPageRoute(builder: (context) => EstimationItemDetailsView(type: item.type)),
 							);
 						}
 					);

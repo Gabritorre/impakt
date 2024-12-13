@@ -120,7 +120,7 @@ class _MainViewState extends State<MainView> {
 
 					// internal path on /estimation_list
 					case EstimationItemDetailsView.routeName:
-						page = const EstimationItemDetailsView();
+						page = const EstimationItemDetailsView(type: 'default');
 						break;
 					default:
 						return null;

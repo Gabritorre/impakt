@@ -1,19 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:impakt/src/api/storage.dart';
+import 'package:impakt/src/info/estimation_item_list_view.dart';
 
 /// Displays detailed information about a SampleItem.
 class EstimationItemDetailsView extends StatelessWidget {
-	const EstimationItemDetailsView({super.key});
+	final String type;
+	const EstimationItemDetailsView({super.key, required this.type});
 
-	static const routeName = '/sample_item';
+	static const routeName = '/item_details';
+
+	String _getDescriptionForEstimation(String type) {
+		final infos = Storage.getInfos();
+
+		switch (type) {
+			case 'Electricity':
+				return infos['electricity']!['description']!;
+			case 'Flight':
+				return infos['flight']!['description']!;
+			case 'Fuel Combustion':
+				return infos['fuel_combustion']!['description']!;
+			case 'Shipping':
+				return infos['shipping']!['description']!;
+			case 'Vehicle':
+				return infos['vehicles']!['description']!;
+			default:
+				return 'default';
+		}
+	}
 
 	@override
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				title: const Text('Estimation Details'),
+				title: Text('$type Estimation Details'),
 			),
-			body: const Center(
-				child: Text('Information Here'),
+			body: Center(
+				child: Column(
+					mainAxisSize: MainAxisSize.min,
+					children: [
+						EstimationListView.getAvatarForEstimation(type),
+						const SizedBox(height: 16),
+						const Divider(),
+						const SizedBox(height: 16),
+						Text(
+							_getDescriptionForEstimation(type),
+							style: const TextStyle(
+								fontSize: 16,
+								fontWeight: FontWeight.bold
+							),
+							textAlign: TextAlign.center
+						),
+						const SizedBox(height: 16),
+						const Divider(),
+					]
+				)
 			),
 		);
 	}
