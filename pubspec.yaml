@@ -35,4 +35,3 @@ flutter:
     - assets/images/
     - assets/.env
     - assets/airports.json
-    - assets/infos.json

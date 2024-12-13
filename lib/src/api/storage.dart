@@ -12,12 +12,9 @@ class Option {
 
 class Storage {
 	static Future<Map<String, String>> getSavedUnits() async {
-		Map<String, String> units;
 		final preferences = await SharedPreferences.getInstance();
-		if (preferences.containsKey('units')) {
-			units = Map.from(jsonDecode(preferences.getString('units')!));
-		} else {
-			units = {
+		if (!preferences.containsKey('units')) {
+			return {
 				'electricity': 'kwh',
 				'distance': 'km',
 				'weight': 'kg',
@@ -25,7 +22,7 @@ class Storage {
 				'carbon': 'kg'
 			};
 		}
-		return units;
+		return Map.from(jsonDecode(preferences.getString('units')!));
 	}
 
 	static Future<void> setSavedUnits(Map<String, String> units) async {
@@ -34,9 +31,29 @@ class Storage {
 		await (await SharedPreferences.getInstance()).setString('units', jsonEncode(saved));
 	}
 
-	static Future<Map<String, Map<String, String>>> getInfos() async {
-		return (jsonDecode(await rootBundle.loadString('assets/infos.json')) as Map<String, dynamic>)
-			.map((key, value) => MapEntry(key, Map<String, String>.from(value)));
+	static Map<String, Map<String, String>> getInfos() {
+		return {
+			"electricity": {
+				"title": "Electricity",
+				"description": "The electricity estimate allows users to obtain an emissions estimate based on a country and the watt hours of consumption. The calculation of the emissions estimate selects the emission factor for the geographic region and multiplies that with the number of units consumed."
+			},
+			"flight": {
+				"title": "Flight",
+				"description": "The flights estimate allows users to obtain an emissions estimate based on flights between airports and the number of passengers. The calculation of the emissions estimate is based on a methodology similar to the one developed by the ICAO."
+			},
+			"fuel_combustion": {
+				"title": "Fuel combustion",
+				"description": "The fuel combustion estimate allows users to estimate the C02 emissions from the combustion of a certain quantity of specified fuel. Simply provide the fuel type and the fuel quantity and it will return the amount of C02 emitted from its combustion."
+			},
+			"shipping": {
+				"title": "Shipping",
+				"description": "The shipping estimate allows users to estimate the C02 emissions from shipping freight given a method of transportation. Simply provide the weight and distance of the package and the method of transportation and it will return the resulting C02 from that shipment."
+			},
+			"vehicles": {
+				"title": "Vehicles",
+				"description": "The vehicles estimate allows users to estimate the C02 emissions from a vehicle travelling a specified distance. Simply provide the vehicle model and the distance it is travelling and it will return the amount of C02 emitted from the trip."
+			}
+		};
 	}
 
 	static Future<List<Option>> getAirports() async {
