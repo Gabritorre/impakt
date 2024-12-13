@@ -77,9 +77,9 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 										padding: const EdgeInsets.symmetric(vertical: 15),
 										child: ElevatedButton(
 											style: ElevatedButton.styleFrom(
-												backgroundColor: const Color.fromARGB(255, 61, 61, 61), // Colore di sfondo
-												foregroundColor: const Color.fromARGB(255, 223, 223, 223), // Colore del testo
-												padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0), // Personalizza il padding
+												backgroundColor: const Color.fromARGB(255, 61, 61, 61),
+												foregroundColor: const Color.fromARGB(255, 223, 223, 223),
+												padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
 											),
 											onPressed: () {
 												if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedCountry == null ) {
@@ -105,17 +105,18 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 								],
 							),
 						),
-						Builder(
-							builder: (context) {
+						FutureBuilder(
+							future: Storage.getSavedUnits(),
+							builder: (context, snapshot) {
 								if (error != null) {
 									return Text(error!);
 								}
-								else if (estimate != null) {
+								// if the estimation has been calculated and the estimation measure unit has been loaded from the storage
+								else if (estimate != null && snapshot.connectionState == ConnectionState.done) {
 									return Padding(
 										padding: const EdgeInsets.symmetric(vertical: 15),
 										child: Text(
-											//'$estimate ${Storage.getSavedUnits()['carbon']} of CO2',
-											'is this the power of javascript',
+											'$estimate ${snapshot.data?['carbon']} of CO2',
 											textAlign: TextAlign.center,
 											style: const TextStyle(
 												fontSize: 23,
@@ -124,10 +125,12 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 											),
 										),
 									);
-								} 
+								}
+								// if not all the fileds have been filled
 								else if (estimate == null && selectedCountry == null && electricityValue == null) {
 									return const SizedBox(height: 0);
 								}
+								// if the estimation is being calculated
 								else {
 									return const Padding(
 										padding: EdgeInsets.symmetric(vertical: 15),
