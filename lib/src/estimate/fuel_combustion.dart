@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:impakt/src/api/broker.dart';
 import 'package:impakt/src/api/storage.dart';
 
+import '../api/api.dart';
+
 class FuelCombustionEstimationView extends StatefulWidget  {
 	const FuelCombustionEstimationView({super.key});
 	static const routeName = '/fuel_estimation';

@@ -1,8 +1,15 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 enum HttpMethod {get, post}
+
+class Option {
+	final String code, label;
+	Option(this.code, this.label);
+	static DropdownMenuEntry<String> asDropdownMenuEntry(Option option) => DropdownMenuEntry(value: option.code, label: option.label);
+}
 
 class Api {
 	static final String _apiKey = dotenv.env['API_KEY']!;

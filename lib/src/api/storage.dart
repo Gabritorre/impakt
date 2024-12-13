@@ -1,14 +1,9 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Option {
-	final String code, label;
-	Option(this.code, this.label);
-	static DropdownMenuEntry<String> asDropdownMenuEntry(Option option) => DropdownMenuEntry(value: option.code, label: option.label);
-}
+import 'api.dart';
 
 class Storage {
 	static Future<Map<String, String>> getSavedUnits() async {

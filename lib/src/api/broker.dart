@@ -3,25 +3,33 @@ import 'package:impakt/src/api/storage.dart';
 import 'api.dart';
 
 class Broker {
-	static final Map<String, String> _vehicleManufacturers = {};
+	static final List<Option> _vehicleManufacturers = [];
 
-	static Future<Map<String, String>> getVehicleManufacturers() async {
+	static Future<List<Option>> getVehicleManufacturers() async {
 		if (_vehicleManufacturers.isEmpty) {
 			final response = await Api.fetch(HttpMethod.get, '/vehicle_makes');
 			for (final manufacturer in response) {
 				final data = manufacturer['data'];
-				_vehicleManufacturers[data['id']] = data['attributes']['name'];
+				_vehicleManufacturers.add(Option(data['id'], data['attributes']['name']));
 			}
 		}
 		return _vehicleManufacturers;
 	}
 
-	static Future<dynamic> getVehicleModels(String manufacturer) async {
-		return await Api.fetch(HttpMethod.get, '/vehicle_makes/$manufacturer/vehicle_models');
-	}
-
-	static Future<dynamic> getFuelSources() async {
-		return await Api.fetch(HttpMethod.get, '/fuel_sources');
+	static Future<List<Option>> getVehicleModels(String manufacturer) async {
+		final response = await Api.fetch(HttpMethod.get, '/vehicle_makes/$manufacturer/vehicle_models');
+		Set<String> labels = {};
+		List<Option> options = [];
+		for (final model in response) {
+			final data = model['data'];
+			final attributes = data['attributes'];
+			final option = Option(data['id'], '${attributes['name']} (${attributes['year']})');
+			if (!labels.contains(option.label)) {
+				options.add(option);
+				labels.add(option.label);
+			}
+		}
+		return options;
 	}
 
 	// --------------- Estimates ---------------
