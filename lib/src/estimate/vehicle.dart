@@ -36,7 +36,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				title: const Text('Vehicle Estimation'),
+				title: const Text('Vehicle estimation'),
 			),
 			body: Center(
 				child: Builder(

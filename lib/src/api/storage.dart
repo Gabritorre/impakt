@@ -124,9 +124,10 @@ class Storage {
 		};
 	}
 
-	static Map<String, String> getFuelSourcesLabels() {
+	static List<Option> getFuelSourcesLabels() {
 		return getFuelSources()
-			.map((code, value) => MapEntry(code, value['label']));
+			.entries.map((entry) => Option(entry.key, entry.value['label']))
+			.toList();
 	}
 
 	static List<Option> getFuelSourcesUnits(String code) {

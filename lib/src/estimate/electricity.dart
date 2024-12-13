@@ -39,7 +39,7 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				title: const Text('Electricity Estimation'),
+				title: const Text('Electricity estimation'),
 			),
 			body: Align(
 				alignment: Alignment.topCenter,

@@ -89,7 +89,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				title: const Text('Flight Estimation'),
+				title: const Text('Flight estimation'),
 			),
 			body: Align(
 				alignment: Alignment.topCenter,

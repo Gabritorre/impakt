@@ -43,7 +43,7 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				title: const Text('Shipping Estimation'),
+				title: const Text('Shipping estimation'),
 			),
 			body: Align(
 				alignment: Alignment.topCenter,
