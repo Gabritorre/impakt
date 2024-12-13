@@ -140,11 +140,11 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 										padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
 										child: PassengersField(
 											validator: (value) {
-											if (value == null || value.isEmpty) {
-												return 'Field required';
-											}
-											passengers = int.tryParse(value);
-											return null;
+												if (value == null || value.isEmpty) {
+													return 'Field required';
+												}
+												passengers = int.tryParse(value);
+												return null;
 											},
 										),
 									),
@@ -216,7 +216,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 									);
 								}
 								// if not all the fileds have been filled
-								else if (estimate == null && selectedDepartureAirport == null && passengers == null) {
+								else if (estimate == null && selectedDepartureAirport == null && selectedDestinationAirport == null && passengers == null && cabinClass == null) {
 									return const SizedBox(height: 0);
 								}
 								// if the estimation is being calculated
