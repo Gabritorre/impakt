@@ -33,25 +33,25 @@ class Storage {
 
 	static Map<String, Map<String, String>> getInfos() {
 		return {
-			"electricity": {
-				"title": "Electricity",
-				"description": "The electricity estimate allows users to obtain an emissions estimate based on a country and the watt hours of consumption. The calculation of the emissions estimate selects the emission factor for the geographic region and multiplies that with the number of units consumed."
+			'electricity': {
+				'title': 'Electricity',
+				'description': 'The electricity estimate allows users to obtain an emissions estimate based on a country and the watt hours of consumption. The calculation of the emissions estimate selects the emission factor for the geographic region and multiplies that with the number of units consumed.'
 			},
-			"flight": {
-				"title": "Flight",
-				"description": "The flights estimate allows users to obtain an emissions estimate based on flights between airports and the number of passengers. The calculation of the emissions estimate is based on a methodology similar to the one developed by the ICAO."
+			'flight': {
+				'title': 'Flight',
+				'description': 'The flights estimate allows users to obtain an emissions estimate based on flights between airports and the number of passengers. The calculation of the emissions estimate is based on a methodology similar to the one developed by the ICAO.'
 			},
-			"fuel_combustion": {
-				"title": "Fuel combustion",
-				"description": "The fuel combustion estimate allows users to estimate the C02 emissions from the combustion of a certain quantity of specified fuel. Simply provide the fuel type and the fuel quantity and it will return the amount of C02 emitted from its combustion."
+			'fuel_combustion': {
+				'title': 'Fuel combustion',
+				'description': 'The fuel combustion estimate allows users to estimate the C02 emissions from the combustion of a certain quantity of specified fuel. Simply provide the fuel type and the fuel quantity and it will return the amount of C02 emitted from its combustion.'
 			},
-			"shipping": {
-				"title": "Shipping",
-				"description": "The shipping estimate allows users to estimate the C02 emissions from shipping freight given a method of transportation. Simply provide the weight and distance of the package and the method of transportation and it will return the resulting C02 from that shipment."
+			'shipping': {
+				'title': 'Shipping',
+				'description': 'The shipping estimate allows users to estimate the C02 emissions from shipping freight given a method of transportation. Simply provide the weight and distance of the package and the method of transportation and it will return the resulting C02 from that shipment.'
 			},
-			"vehicles": {
-				"title": "Vehicles",
-				"description": "The vehicles estimate allows users to estimate the C02 emissions from a vehicle travelling a specified distance. Simply provide the vehicle model and the distance it is travelling and it will return the amount of C02 emitted from the trip."
+			'vehicles': {
+				'title': 'Vehicles',
+				'description': 'The vehicles estimate allows users to estimate the C02 emissions from a vehicle travelling a specified distance. Simply provide the vehicle model and the distance it is travelling and it will return the amount of C02 emitted from the trip.'
 			}
 		};
 	}
@@ -64,6 +64,74 @@ class Storage {
 				return Option(iata, label);
 			})
 			.cast<Option>()
+			.toList();
+	}
+
+	static Map<String, Map<String, dynamic>> getFuelSources() {
+		return {
+			'bit': {
+				'label': 'Bituminous Coal',
+				'units': ['Short Ton', 'BTU']
+			},
+			'dfo': {
+				'label': 'Home Heating and Diesel Fuel (Distillate)',
+				'units': ['Gallon', 'BTU']
+			},
+			'jf': {
+				'label': 'Jet Fuel',
+				'units': ['Gallon', 'BTU']
+			},
+			'ker': {
+				'label': 'Kerosene',
+				'units': ['Gallon', 'BTU']
+			},
+			'lig': {
+				'label': 'Lignite Coal',
+				'units': ['Short Ton', 'BTU']
+			},
+			'msw': {
+				'label': 'Municipal Solid Waste',
+				'units': ['Short Ton', 'BTU']
+			},
+			'ng': {
+				'label': 'Natural Gas',
+				'units': ['Thousand Cubic Feet', 'BTU']
+			},
+			'pc': {
+				'label': 'Petroleum Coke',
+				'units': ['Gallon', 'BTU']
+			},
+			'pg': {
+				'label': 'Propane Gas',
+				'units': ['Gallon', 'BTU']
+			},
+			'rfo': {
+				'label': 'Residual Fuel Oil',
+				'units': ['Gallon', 'BTU']
+			},
+			'sub': {
+				'label': 'Subbituminous Coal',
+				'units': ['Short Ton', 'BTU']
+			},
+			'tdf': {
+				'label': 'Tire-Derived Fuel',
+				'units': ['Short Ton', 'BTU']
+			},
+			'wo': {
+				'label': 'Waste Oil',
+				'units': ['Barrel', 'BTU']
+			}
+		};
+	}
+
+	static Map<String, String> getFuelSourcesLabels() {
+		return getFuelSources()
+			.map((code, value) => MapEntry(code, value['label']));
+	}
+
+	static List<Option> getFuelSourcesUnits(String code) {
+		return (getFuelSources()[code]!['units'] as List<String>)
+			.map((unit) => Option(unit.toLowerCase().replaceAll(' ', '_'), unit))
 			.toList();
 	}
 
