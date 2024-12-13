@@ -14,18 +14,23 @@ class ShippingEstimationView extends StatefulWidget  {
 class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 	String? estimate;
 	String? error;
-	
 
-	// On first widget's render
-	@override
-	void initState() {
-		super.initState();
+	final _formKey = GlobalKey<FormState>();
+	double? selectedWeight;
+	double? selectedDistance;
+	String? selectedTransportMethod;
+
+	final TextEditingController trasportMethodController = TextEditingController();
+
+
+	void estimateShipping(weight, distance, transportMethod) {
+		print('Estimating shipping with weight $weight and distance $distance using $transportMethod');
 		WidgetsBinding.instance.addPostFrameCallback((_) async{
 			try {
 				final shippingEstimate = await Broker.getShippingEstimate(
-					weightValue: 200.0,
-					distanceValue: 2000.0,
-					transportMethod: 'truck'
+					weightValue: weight,
+					distanceValue: distance,
+					transportMethod: transportMethod
 				);
 				setState(() => estimate = shippingEstimate);
 			} catch (error) {
@@ -40,20 +45,177 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 			appBar: AppBar(
 				title: const Text('Shipping Estimation'),
 			),
-			body: Center(
-				child: Builder(
-					builder: (context) {
-						if (error != null) {
-							return Text(error!);
-						} else if (estimate != null) {
-							//return Text('$estimate ${Storage.getSavedUnits()['carbon']}');
-							return Text("why yes, i start a thread each time i need to get a string, how could you tell?");
-						} else {
-							return const CircularProgressIndicator();
-						}
-					},
+			body: Align(
+				alignment: Alignment.topCenter,
+				child: Column(
+					mainAxisSize: MainAxisSize.min,
+					children: [
+						Form(
+							key: _formKey,
+							child: Column(
+								children: [
+									const SizedBox(height: 10),
+									Padding(
+										padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+										child: ShippingInfoField(
+											validator: (value) {
+											if (value == null || value.isEmpty) {
+													return 'Field required';
+												}
+												selectedWeight = double.tryParse(value);
+												return null;
+											},
+											unit: 'Kg',
+											labelText: 'Weight',
+										),
+									),
+									const SizedBox(height: 10),
+									Padding(
+										padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+										child: ShippingInfoField(
+											validator: (value) {
+											if (value == null || value.isEmpty) {
+													return 'Field required';
+												}
+												selectedDistance = double.tryParse(value);
+												return null;
+											},
+											unit: 'Km',
+											labelText: 'Distance',
+										),
+									),
+									const SizedBox(height: 20),
+									Padding(
+										padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+										child: SelectorField(
+											controller: trasportMethodController,
+											label: const Text('Transport method'),
+											onSelected: (String? transportMethod) {
+												selectedTransportMethod = transportMethod;
+											},
+											dropdownMenuEntries: Storage.getTransportMethods().map(Option.asDropdownMenuEntry).toList(),
+										)
+									),
+									Padding(
+										padding: const EdgeInsets.symmetric(vertical: 15),
+										child: ElevatedButton(
+											style: ElevatedButton.styleFrom(
+												backgroundColor: const Color.fromARGB(255, 61, 61, 61),
+												foregroundColor: const Color.fromARGB(255, 223, 223, 223),
+												padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+											),
+											onPressed: () {
+												if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedWeight == null || selectedDistance == null || selectedTransportMethod == null) {
+													ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invalid form')));
+												}
+												else {
+													setState(() {
+														estimate = null;
+													});
+													estimateShipping(selectedWeight, selectedDistance, selectedTransportMethod);
+												}
+											},
+											child: const Text(
+												'Estimate',
+												textAlign: TextAlign.center,
+												style: TextStyle(
+													fontSize: 18,
+													fontWeight: FontWeight.bold,
+												),
+											),
+										),
+									),
+								],
+							),
+						),
+						FutureBuilder(
+							future: Storage.getSavedUnits(),
+							builder: (context, snapshot) {
+								if (error != null) {
+									return Text(error!);
+								}
+								// if the estimation has been calculated and the estimation measure unit has been loaded from the storage
+								else if (estimate != null && snapshot.connectionState == ConnectionState.done) {
+									return Padding(
+										padding: const EdgeInsets.symmetric(vertical: 15),
+										child: Text(
+											'$estimate ${snapshot.data?['carbon']} of CO2',
+											textAlign: TextAlign.center,
+											style: const TextStyle(
+												fontSize: 23,
+												fontWeight: FontWeight.bold,
+												color: Color.fromARGB(255, 212, 212, 212),
+											),
+										),
+									);
+								}
+								// if not all the fileds have been filled
+								else if (estimate == null && selectedWeight == null && selectedDistance == null && selectedTransportMethod == null) {
+									return const SizedBox(height: 0);
+								}
+								// if the estimation is being calculated
+								else {
+									return const Padding(
+										padding: EdgeInsets.symmetric(vertical: 15),
+										child: CircularProgressIndicator()
+									);
+								}
+							},
+						),
+					],
 				),
 			),
+		);
+	}
+}
+
+class ShippingInfoField extends StatelessWidget {
+	const ShippingInfoField({super.key, this.validator, required this.unit, this.labelText});
+	final FormFieldValidator<String>? validator;
+	final String unit;
+	final String? labelText;
+
+	@override
+	Widget build(BuildContext context) {
+		return TextFormField(
+			keyboardType: TextInputType.number,
+			decoration: InputDecoration(
+				labelText: labelText,
+				border: UnderlineInputBorder(),
+				suffix : Text(
+					unit,
+					textAlign: TextAlign.center,
+					style: TextStyle(
+						fontSize: 18,
+						fontWeight: FontWeight.bold,
+						color: Color.fromARGB(255, 155, 155, 155),
+					),
+				),
+			),
+			validator: validator,
+		);
+	}
+}
+
+class SelectorField extends StatelessWidget{
+	const SelectorField({super.key, this.controller, this.onSelected, this.label, required this.dropdownMenuEntries});
+	final TextEditingController? controller;
+	final ValueChanged<String?>? onSelected;
+	final Widget? label;
+	final List<DropdownMenuEntry<String>> dropdownMenuEntries;
+
+	@override
+	Widget build(BuildContext context) {
+		return DropdownMenu(
+			controller: controller,
+			width: double.infinity,
+			menuHeight: null,
+			enableFilter: true,
+			enableSearch: false,
+			requestFocusOnTap: true,
+			label: label,
+			onSelected: onSelected,
+			dropdownMenuEntries: dropdownMenuEntries,
 		);
 	}
 }

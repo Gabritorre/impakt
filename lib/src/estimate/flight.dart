@@ -24,15 +24,17 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 	String? cabinClass;
 	final TextEditingController departureController = TextEditingController();
 	final TextEditingController destinationController = TextEditingController();
+	final TextEditingController classCabinController = TextEditingController();
+	
 
-	void estimateFlight(String? selectedDepartureAirport, String? selectedDestinationAirport, int? passengers, String? cabinClass) {
+	void estimateFlight(selectedDepartureAirport, selectedDestinationAirport, passengers, cabinClass) {
 		print('Estimating flight from $selectedDepartureAirport to $selectedDestinationAirport ($passengers passengers, $cabinClass class)');
 		WidgetsBinding.instance.addPostFrameCallback((_) async {
 			try {
 				final flightEstimate = await Broker.getFlightEstimate(
-					passengers: passengers!,
-					departureAirport: selectedDepartureAirport!,
-					destinationAirport: selectedDestinationAirport!,
+					passengers: passengers,
+					departureAirport: selectedDepartureAirport,
+					destinationAirport: selectedDestinationAirport,
 					cabinClass: cabinClass
 				);
 				setState(() => estimate = flightEstimate);
@@ -149,7 +151,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 									Padding(
 										padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
 										child: SelectorField(
-											controller: TextEditingController(),
+											controller: classCabinController,
 											label: const Text('Cabin class'),
 											onSelected: (String? classType) {
 												cabinClass = classType;

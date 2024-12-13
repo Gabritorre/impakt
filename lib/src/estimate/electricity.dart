@@ -88,6 +88,7 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 												else {
 													setState(() {
 														estimate = null;
+														error = null;
 													});
 													estimateElectricity(electricityValue, selectedCountry);
 												}
