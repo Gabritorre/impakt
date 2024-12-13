@@ -65,12 +65,10 @@ class EstimationListView extends StatelessWidget {
 						title: Text('${item.type} estimation'),
 						leading: getAvatarForEstimation(item.type),
 						onTap: () {
-							// Navigate to the details page. If the user leaves and returns to
-							// the app after it has been killed while running in the
-							// background, the navigation stack is restored.
-							Navigator.push(
+							Navigator.pushNamed(
 								context,
-								MaterialPageRoute(builder: (context) => EstimationItemDetailsView(type: item.type)),
+								EstimationItemDetailsView.routeName,
+								arguments: {'type': item.type},
 							);
 						}
 					);
