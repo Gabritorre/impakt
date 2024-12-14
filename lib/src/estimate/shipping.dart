@@ -86,7 +86,7 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 												labelText: 'Distance',
 											),
 										),
-										const SizedBox(height: 20),
+										const SizedBox(height: 10),
 										Padding(
 											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
 											child: SelectorField(
@@ -98,6 +98,7 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 												dropdownMenuEntries: Storage.getTransportMethods().map(Option.asDropdownMenuEntry).toList(),
 											)
 										),
+										const SizedBox(height: 10),
 										Padding(
 											padding: const EdgeInsets.symmetric(vertical: 15),
 											child: ElevatedButton(

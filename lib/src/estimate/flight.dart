@@ -119,7 +119,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 												},
 											),
 										),
-										const SizedBox(height: 20),
+										const SizedBox(height: 10),
 										Padding(
 											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
 											child: ValueListenableBuilder<List<Option>>(
@@ -136,7 +136,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 												},
 											),
 										),
-										const SizedBox(height: 20),
+										const SizedBox(height: 10),
 										Padding(
 											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
 											child: PassengersField(
@@ -149,7 +149,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 												},
 											),
 										),
-										const SizedBox(height: 20),
+										const SizedBox(height: 10),
 										Padding(
 											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
 											child: SelectorField(
@@ -161,7 +161,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 												dropdownMenuEntries: Storage.getCabinClasses().map(Option.asDropdownMenuEntry).toList(),
 											)
 										),
-										const SizedBox(height: 20),
+										const SizedBox(height: 10),
 										Padding(
 											padding: const EdgeInsets.symmetric(vertical: 15),
 											child: ElevatedButton(

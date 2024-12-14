@@ -115,7 +115,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 												},
 											),
 										),
-										const SizedBox(height: 20),
+										const SizedBox(height: 10),
 										Padding(
 											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
 											child: ValueListenableBuilder<List<Option>>(
@@ -132,7 +132,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 												},
 											),
 										),
-										const SizedBox(height: 20),
+										const SizedBox(height: 10),
 										Padding(
 											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
 											child: DistanceField(
@@ -145,7 +145,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 												},
 											),
 										),
-										const SizedBox(height: 20),
+										const SizedBox(height: 10),
 										Padding(
 											padding: const EdgeInsets.symmetric(vertical: 15),
 											child: ElevatedButton(

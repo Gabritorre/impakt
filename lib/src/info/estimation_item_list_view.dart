@@ -31,7 +31,7 @@ class EstimationListView extends StatelessWidget {
 		}
 
 		return CircleAvatar(
-			child: Icon(icon),
+			child: Icon(icon, size: 32.0),
 		);
 	}
 
@@ -49,15 +49,23 @@ class EstimationListView extends StatelessWidget {
 					final item = items[index];
 
 					return ListTile(
-						title: Text('${item.type} estimation'),
-						leading: getAvatarForEstimation(item.type),
+						title: Text(
+							'${item.type} estimation',
+							style: const TextStyle(fontSize: 18),
+						),
+						leading: SizedBox(
+							width: 50,
+							height: 50,
+							child: getAvatarForEstimation(item.type),
+						),
 						onTap: () {
 							Navigator.pushNamed(
 								context,
 								EstimationItemDetailsView.routeName,
 								arguments: {'type': item.type},
 							);
-						}
+						},
+						contentPadding: const EdgeInsets.all(8),
 					);
 				},
 			),
