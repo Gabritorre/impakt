@@ -89,146 +89,150 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 	@override
 	Widget build(BuildContext context) {
 		return Scaffold(
+			resizeToAvoidBottomInset: true,
 			appBar: AppBar(
 				title: const Text('Flight estimation'),
 			),
 			body: Align(
 				alignment: Alignment.topCenter,
-				child: Column(
-					mainAxisSize: MainAxisSize.min,
-					children: [
-						Form(
-							key: _formKey,
-							child: Column(
-								children: [
-									const SizedBox(height: 10),
-									Padding(
-										padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-										child: ValueListenableBuilder<List<Option>>(
-											valueListenable: filteredDepartureOptions,
-											builder: (context, options, child) {
-												return SelectorField(
-													controller: departureController,
-													label: const Text('Departure airport'),
-													onSelected: (String? airport) {
-														selectedDepartureAirport = airport;
-													},
-													dropdownMenuEntries: options.map(Option.asDropdownMenuEntry).toList(),
-												);
-											},
-										),
-									),
-									const SizedBox(height: 20),
-									Padding(
-										padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-										child: ValueListenableBuilder<List<Option>>(
-											valueListenable: filteredDestinationOptions,
-											builder: (context, options, child) {
-												return SelectorField(
-													controller: destinationController,
-													label: const Text('Destination airport'),
-													onSelected: (String? airport) {
-														selectedDestinationAirport = airport;
-													},
-													dropdownMenuEntries: options.map(Option.asDropdownMenuEntry).toList(),
-												);
-											},
-										),
-									),
-									const SizedBox(height: 20),
-									Padding(
-										padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-										child: PassengersField(
-											validator: (value) {
-												if (value == null || value.isEmpty) {
-													return 'Field required';
-												}
-												passengers = int.tryParse(value);
-												return null;
-											},
-										),
-									),
-									const SizedBox(height: 20),
-									Padding(
-										padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-										child: SelectorField(
-											controller: classCabinController,
-											label: const Text('Cabin class'),
-											onSelected: (String? classType) {
-												cabinClass = classType;
-											},
-											dropdownMenuEntries: Storage.getCabinClasses().map(Option.asDropdownMenuEntry).toList(),
-										)
-									),
-									const SizedBox(height: 20),
-									Padding(
-										padding: const EdgeInsets.symmetric(vertical: 15),
-										child: ElevatedButton(
-											style: ElevatedButton.styleFrom(
-												backgroundColor: const Color.fromARGB(255, 61, 61, 61),
-												foregroundColor: const Color.fromARGB(255, 223, 223, 223),
-												padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+				child: SingleChildScrollView(
+					child: Column(
+						mainAxisSize: MainAxisSize.min,
+						children: [
+							Form(
+								key: _formKey,
+								child: Column(
+									children: [
+										const SizedBox(height: 10),
+										Padding(
+											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+											child: ValueListenableBuilder<List<Option>>(
+												valueListenable: filteredDepartureOptions,
+												builder: (context, options, child) {
+													return SelectorField(
+														controller: departureController,
+														label: const Text('Departure airport'),
+														onSelected: (String? airport) {
+															selectedDepartureAirport = airport;
+														},
+														dropdownMenuEntries: options.map(Option.asDropdownMenuEntry).toList(),
+													);
+												},
 											),
-											onPressed: () {
-												if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedDepartureAirport == null || selectedDestinationAirport == null || passengers == null || cabinClass == null) {
-													ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invalid form')));
-												}
-												else {
-													setState(() {
-														estimate = null;
-														error = null;
-													});
-													estimateFlight(selectedDepartureAirport, selectedDestinationAirport, passengers, cabinClass);
-												}
-											},
-											child: const Text(
-												'Estimate',
-												textAlign: TextAlign.center,
-												style: TextStyle(
-													fontSize: 18,
-													fontWeight: FontWeight.bold,
+										),
+										const SizedBox(height: 20),
+										Padding(
+											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+											child: ValueListenableBuilder<List<Option>>(
+												valueListenable: filteredDestinationOptions,
+												builder: (context, options, child) {
+													return SelectorField(
+														controller: destinationController,
+														label: const Text('Destination airport'),
+														onSelected: (String? airport) {
+															selectedDestinationAirport = airport;
+														},
+														dropdownMenuEntries: options.map(Option.asDropdownMenuEntry).toList(),
+													);
+												},
+											),
+										),
+										const SizedBox(height: 20),
+										Padding(
+											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+											child: PassengersField(
+												validator: (value) {
+													if (value == null || value.isEmpty) {
+														return 'Field required';
+													}
+													passengers = int.tryParse(value);
+													return null;
+												},
+											),
+										),
+										const SizedBox(height: 20),
+										Padding(
+											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+											child: SelectorField(
+												controller: classCabinController,
+												label: const Text('Cabin class'),
+												onSelected: (String? classType) {
+													cabinClass = classType;
+												},
+												dropdownMenuEntries: Storage.getCabinClasses().map(Option.asDropdownMenuEntry).toList(),
+											)
+										),
+										const SizedBox(height: 20),
+										Padding(
+											padding: const EdgeInsets.symmetric(vertical: 15),
+											child: ElevatedButton(
+												style: ElevatedButton.styleFrom(
+													backgroundColor: const Color.fromARGB(255, 61, 61, 61),
+													foregroundColor: const Color.fromARGB(255, 223, 223, 223),
+													padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+												),
+												onPressed: () {
+													FocusScope.of(context).unfocus();	//close keyboard
+													if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedDepartureAirport == null || selectedDestinationAirport == null || passengers == null || cabinClass == null) {
+														ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all the input fields')));
+													}
+													else {
+														setState(() {
+															estimate = null;
+															error = null;
+														});
+														estimateFlight(selectedDepartureAirport, selectedDestinationAirport, passengers, cabinClass);
+													}
+												},
+												child: const Text(
+													'Estimate',
+													textAlign: TextAlign.center,
+													style: TextStyle(
+														fontSize: 18,
+														fontWeight: FontWeight.bold,
+													),
 												),
 											),
 										),
-									),
-								],
+									],
+								),
 							),
-						),
-						FutureBuilder(
-							future: Storage.getSavedUnits(),
-							builder: (context, snapshot) {
-								if (error != null) {
-									return Text(error!);
-								}
-								// if the estimation has been calculated and the estimation measure unit has been loaded from the storage
-								else if (estimate != null && snapshot.connectionState == ConnectionState.done) {
-									return Padding(
-										padding: const EdgeInsets.symmetric(vertical: 15),
-										child:Text(
-											'$estimate ${snapshot.data?['carbon']} of CO2',
-											textAlign: TextAlign.center,
-											style: const TextStyle(
-												fontSize: 23,
-												fontWeight: FontWeight.bold,
-												color: Color.fromARGB(255, 212, 212, 212),
+							FutureBuilder(
+								future: Storage.getSavedUnits(),
+								builder: (context, snapshot) {
+									if (error != null) {
+										return Text(error!);
+									}
+									// if the estimation has been calculated and the estimation measure unit has been loaded from the storage
+									else if (estimate != null && snapshot.connectionState == ConnectionState.done) {
+										return Padding(
+											padding: const EdgeInsets.symmetric(vertical: 15),
+											child:Text(
+												'$estimate ${snapshot.data?['carbon']} of CO2',
+												textAlign: TextAlign.center,
+												style: const TextStyle(
+													fontSize: 23,
+													fontWeight: FontWeight.bold,
+													color: Color.fromARGB(255, 212, 212, 212),
+												),
 											),
-										),
-									);
-								}
-								// if not all the fileds have been filled
-								else if (estimate == null && selectedDepartureAirport == null && selectedDestinationAirport == null && passengers == null && cabinClass == null) {
-									return const SizedBox(height: 0);
-								}
-								// if the estimation is being calculated
-								else {
-									return const Padding(
-										padding: EdgeInsets.symmetric(vertical: 15),
-										child: CircularProgressIndicator()
-									);
-								}
-							},
-						),
-					],
+										);
+									}
+									// if not all the fileds have been filled
+									else if (estimate == null && selectedDepartureAirport == null && selectedDestinationAirport == null && passengers == null && cabinClass == null) {
+										return const SizedBox(height: 0);
+									}
+									// if the estimation is being calculated
+									else {
+										return const Padding(
+											padding: EdgeInsets.symmetric(vertical: 15),
+											child: CircularProgressIndicator()
+										);
+									}
+								},
+							),
+						],
+					),
 				),
 			),
 		);

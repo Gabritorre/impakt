@@ -32,10 +32,7 @@ class EstimationListView extends StatelessWidget {
 		}
 
 		return CircleAvatar(
-			child: Icon(
-				icon,
-				color: Colors.white,
-			),
+			child: Icon(icon),
 		);
 	}
 
