@@ -89,7 +89,6 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 	@override
 	Widget build(BuildContext context) {
 		return Scaffold(
-			resizeToAvoidBottomInset: true,
 			appBar: AppBar(
 				title: const Text('Flight estimation'),
 			),
@@ -213,7 +212,6 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 												style: const TextStyle(
 													fontSize: 23,
 													fontWeight: FontWeight.bold,
-													color: Color.fromARGB(255, 212, 212, 212),
 												),
 											),
 										);

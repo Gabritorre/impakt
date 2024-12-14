@@ -39,53 +39,53 @@ class HomePage extends StatelessWidget {
 						radius: screenWidth / (2 * screenWidth) + 0.15,
 					)
 				),
-					child: Center(
-							child: Column(
-								mainAxisSize: MainAxisSize.min,
-								children:[
-									Row(
-										mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-										children: [
-											CustomButton(
-												icon: Icons.electric_bolt,
-												route: ElectricityEstimationView.routeName,
-											),
-											CustomButton(
-												icon: Icons.flight,
-												route: FlightEstimationView.routeName,
-											),
-										],
-									),
-									SizedBox(height: 20),
-									Row(
-										mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-										children: [
-											CustomButton(
-												icon: Icons.oil_barrel,
-												route: FuelCombustionEstimationView.routeName,
-											),
-											Text(
-												'Impakt',
-												style: TextStyle(
-													fontSize: 30,
-													fontWeight: FontWeight.bold,
-												),
-											),
-											CustomButton(
-												icon: Icons.local_shipping,
-												route: ShippingEstimationView.routeName,
-											),
-										],
-									),
-									SizedBox(height: 20),
+				child: Center(
+					child: Column(
+						mainAxisSize: MainAxisSize.min,
+						children:[
+							Row(
+								mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+								children: [
 									CustomButton(
-										icon: Icons.directions_car,
-										route: VehicleEstimationView.routeName,
+										icon: Icons.electric_bolt,
+										route: ElectricityEstimationView.routeName,
 									),
-								]
-							)
-						),
-					),
+									CustomButton(
+										icon: Icons.flight,
+										route: FlightEstimationView.routeName,
+									),
+								],
+							),
+							SizedBox(height: 20),
+							Row(
+								mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+								children: [
+									CustomButton(
+										icon: Icons.oil_barrel,
+										route: FuelCombustionEstimationView.routeName,
+									),
+									Text(
+										'Impakt',
+										style: TextStyle(
+											fontSize: 30,
+											fontWeight: FontWeight.bold,
+										),
+									),
+									CustomButton(
+										icon: Icons.local_shipping,
+										route: ShippingEstimationView.routeName,
+									),
+								],
+							),
+							SizedBox(height: 20),
+							CustomButton(
+								icon: Icons.directions_car,
+								route: VehicleEstimationView.routeName,
+							),
+						]
+					)
+				),
+			),
 		);
 	}
 }
@@ -101,9 +101,9 @@ class CustomButton extends StatelessWidget {
 				Navigator.pushNamed(context, route);
 			},
 			style: ElevatedButton.styleFrom(
-				padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Padding personalizzato
+				padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
 				shape: RoundedRectangleBorder(
-					borderRadius: BorderRadius.circular(20.0), // Curvatura dei bordi
+					borderRadius: BorderRadius.circular(20.0),
 				),
 			),
 			child: Icon(icon, size: 70.0),

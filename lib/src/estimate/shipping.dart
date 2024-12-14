@@ -147,7 +147,6 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 												style: const TextStyle(
 													fontSize: 23,
 													fontWeight: FontWeight.bold,
-													color: Color.fromARGB(255, 212, 212, 212),
 												),
 											),
 										);

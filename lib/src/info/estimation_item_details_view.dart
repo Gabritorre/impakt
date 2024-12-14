@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:impakt/src/api/storage.dart';
 import 'package:impakt/src/info/estimation_item_list_view.dart';
 
-/// Displays detailed information about a SampleItem.
 class EstimationItemDetailsView extends StatelessWidget {
 	final String type;
 	const EstimationItemDetailsView({super.key, required this.type});
