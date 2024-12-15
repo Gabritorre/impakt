@@ -36,7 +36,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 				);
 				setState(() => estimate = vehicleEstimate);
 			} catch (error) {
-				setState(() => this.error = 'Error: $error');
+				setState(() => this.error = 'Error: ${error.toString()}');
 			}
 		});
 	}

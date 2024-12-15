@@ -79,9 +79,23 @@ class Broker {
 			'distance_unit': distanceUnit
 		};
 
-		final response = await Api.fetch(HttpMethod.post, '/estimates', body);
-		final estimate = response['data']['attributes']['carbon_$carbonUnit'];
-		return estimate.toString();
+		try {
+			final response = await Api.fetch(HttpMethod.post, '/estimates', body);	
+			final estimate = response['data']['attributes']['carbon_$carbonUnit'];
+			return estimate.toString();
+		} catch (e) {
+			if (e is ApiException && e.responseBody != null) {
+				final RegExp regex = RegExp(r'\"([A-Z]{3})\"');
+				final matches = regex.allMatches(e.responseBody!['message']);
+				final iataCodes = matches.map((match) => match.group(1));
+				if (iataCodes.length <= 2) {
+					throw ApiException(message: 'Invalid airports: ${iataCodes.join(', ')}');
+				} else {
+					rethrow;
+				}
+			}
+			rethrow;
+		}
 	}
 
 	static Future<String> getShippingEstimate({

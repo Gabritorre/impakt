@@ -40,7 +40,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 				);
 				setState(() => estimate = flightEstimate);
 			} catch (error) {
-				setState(() => this.error = 'Error: $error');
+				setState(() => this.error = 'Error: ${error.toString()}');
 			}
 		});
 	}

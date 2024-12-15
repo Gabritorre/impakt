@@ -32,7 +32,7 @@ class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationV
 				);
 				setState(() => estimate = fuelCombustionEstimate);
 			} catch (error) {
-				setState(() => this.error = 'Error: $error');
+				setState(() => this.error = 'Error: ${error.toString()}');
 			}
 		});
 	}

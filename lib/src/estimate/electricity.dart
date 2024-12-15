@@ -31,7 +31,7 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 				);
 				setState(() => estimate = electricityEstimate);
 			} catch (error) {
-				setState(() => this.error = 'Error: $error');
+				setState(() => this.error = 'Error: ${error.toString()}');
 			}
 		});
 	}

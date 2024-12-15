@@ -35,7 +35,7 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 				);
 				setState(() => estimate = shippingEstimate);
 			} catch (error) {
-				setState(() => this.error = 'Error: $error');
+				setState(() => this.error = 'Error: ${error.toString()}');
 			}
 		});
 	}
