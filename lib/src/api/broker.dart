@@ -3,27 +3,27 @@ import 'package:impakt/src/api/storage.dart';
 import 'api.dart';
 
 class Broker {
-	static final List<Option> _vehicleManufacturers = [];
+	static final List<Choice> _vehicleManufacturers = [];
 
-	static Future<List<Option>> getVehicleManufacturers() async {
+	static Future<List<Choice>> getVehicleManufacturers() async {
 		if (_vehicleManufacturers.isEmpty) {
 			final response = await Api.fetch(HttpMethod.get, '/vehicle_makes');
 			for (final manufacturer in response) {
 				final data = manufacturer['data'];
-				_vehicleManufacturers.add(Option(data['id'], data['attributes']['name']));
+				_vehicleManufacturers.add(Choice(data['id'], data['attributes']['name']));
 			}
 		}
 		return _vehicleManufacturers;
 	}
 
-	static Future<List<Option>> getVehicleModels(String manufacturer) async {
+	static Future<List<Choice>> getVehicleModels(String manufacturer) async {
 		final response = await Api.fetch(HttpMethod.get, '/vehicle_makes/$manufacturer/vehicle_models');
 		Set<String> labels = {};
-		List<Option> options = [];
+		List<Choice> options = [];
 		for (final model in response) {
 			final data = model['data'];
 			final attributes = data['attributes'];
-			final option = Option(data['id'], '${attributes['name']} (${attributes['year']})');
+			final option = Choice(data['id'], '${attributes['name']} (${attributes['year']})');
 			if (!labels.contains(option.label)) {
 				options.add(option);
 				labels.add(option.label);
@@ -40,14 +40,14 @@ class Broker {
 	}) async {
 		const type = 'electricity';
 		final units = await Storage.getSavedUnits();
-		final carbonUnit = units['carbon'];
-		final electricityUnit = units['electricity'];
+		final carbonUnit = units['carbon']!.code;
+		final electricityUnit = units['electricity']!.code;
 
 		final Map<String, dynamic> body = {
 			'type': type,
 			'electricity_value': electricityValue,
 			'country': country,
-			if (electricityUnit != null) 'electricity_unit': electricityUnit,
+			'electricity_unit': electricityUnit,
 		};
 
 		final response = await Api.fetch(HttpMethod.post, '/estimates', body);
@@ -63,8 +63,8 @@ class Broker {
 	}) async {
 		const type = 'flight';
 		final units = await Storage.getSavedUnits();
-		final carbonUnit = units['carbon'];
-		final distanceUnit = units['distance'];
+		final carbonUnit = units['carbon']!.code;
+		final distanceUnit = units['distance']!.code;
 
 		final Map<String, dynamic> body = {
 			'type': type,
@@ -76,7 +76,7 @@ class Broker {
 					if (cabinClass != null) 'cabin_class': cabinClass,
 				}
 			],
-			if (distanceUnit != null) 'distance_unit': distanceUnit
+			'distance_unit': distanceUnit
 		};
 
 		final response = await Api.fetch(HttpMethod.post, '/estimates', body);
@@ -91,9 +91,9 @@ class Broker {
 	}) async {
 		const type = 'shipping';
 		final units = await Storage.getSavedUnits();
-		final carbonUnit = units['carbon'];
-		final weightUnit = units['weight'];
-		final distanceUnit = units['distance'];
+		final carbonUnit = units['carbon']!.code;
+		final weightUnit = units['weight']!.code;
+		final distanceUnit = units['distance']!.code;
 
 		final Map<String, dynamic> body = {
 			'type': type,
@@ -109,14 +109,14 @@ class Broker {
 		return estimate.toString();
 	}
 
-	static Future<dynamic> getVehicleEstimate({
+	static Future<String> getVehicleEstimate({
 		required double distanceValue,
 		required String veichleModelId
 	}) async {
 		const type = 'vehicle';
 		final units = await Storage.getSavedUnits();
-		final carbonUnit = units['carbon'];
-		final distanceUnit = units['distance'];
+		final carbonUnit = units['carbon']!.code;
+		final distanceUnit = units['distance']!.code;
 
 		final Map<String, dynamic> body = {
 			'type': type,
@@ -130,14 +130,14 @@ class Broker {
 		return estimate.toString();
 	}
 
-	static Future<dynamic> getFuelCombustionEstimate({
+	static Future<String> getFuelCombustionEstimate({
 		required String fuelSourceType,
 		required double fuelSourceValue
 	}) async {
 		const type = 'fuel_combustion';
 		final units = await Storage.getSavedUnits();
-		final carbonUnit = units['carbon'];
-		final fuelSourceUnit = units['fuel_source'];
+		final carbonUnit = units['carbon']!.code;
+		final fuelSourceUnit = units['fuel_$fuelSourceType']!.code;
 
 		final Map<String, dynamic> body = {
 			'type': type,

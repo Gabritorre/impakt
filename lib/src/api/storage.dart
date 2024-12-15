@@ -6,132 +6,94 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
 
 class Storage {
-	static Future<Map<String, String>> getSavedUnits() async {
+	static Future<Map<String, Choice>> getSavedUnits() async {
 		final preferences = await SharedPreferences.getInstance();
 		if (!preferences.containsKey('units')) {
-			return {
-				'electricity': 'kwh',
-				'distance': 'km',
-				'weight': 'kg',
-				'fuel_source': 'btu',
-				'carbon': 'kg'
-			};
+			return getUnits()
+				.map((measure, units) => MapEntry(measure, units[0]));
 		}
-		return Map.from(jsonDecode(preferences.getString('units')!));
+		return Map.from(jsonDecode(preferences.getString('units')!))
+			.map((measure, unit) => MapEntry(measure,
+				getUnits()[measure]!.firstWhere((choice) => choice.code == unit)
+			));
 	}
 
 	static Future<void> setSavedUnits(Map<String, String> units) async {
-		final saved = await getSavedUnits();
+		final saved = (await getSavedUnits())
+			.map((measure, unit) => MapEntry(measure, unit.code));
 		saved.addAll(units);
-		await (await SharedPreferences.getInstance()).setString('units', jsonEncode(saved));
+		await (await SharedPreferences.getInstance())
+			.setString('units', jsonEncode(saved));
 	}
 
-	static Map<String, Map<String, String>> getInfos() {
+	static Map<String, String> getInfos() {
 		return {
-			'electricity': {
-				'title': 'Electricity',
-				'description': 'The electricity estimate allows users to obtain an emissions estimate based on a country and the watt hours of consumption. The calculation of the emissions estimate selects the emission factor for the geographic region and multiplies that with the number of units consumed.'
-			},
-			'flight': {
-				'title': 'Flight',
-				'description': 'The flights estimate allows users to obtain an emissions estimate based on flights between airports and the number of passengers. The calculation of the emissions estimate is based on a methodology similar to the one developed by the ICAO.'
-			},
-			'fuel_combustion': {
-				'title': 'Fuel combustion',
-				'description': 'The fuel combustion estimate allows users to estimate the C02 emissions from the combustion of a certain quantity of specified fuel. Simply provide the fuel type and the fuel quantity and it will return the amount of C02 emitted from its combustion.'
-			},
-			'shipping': {
-				'title': 'Shipping',
-				'description': 'The shipping estimate allows users to estimate the C02 emissions from shipping freight given a method of transportation. Simply provide the weight and distance of the package and the method of transportation and it will return the resulting C02 from that shipment.'
-			},
-			'vehicles': {
-				'title': 'Vehicles',
-				'description': 'The vehicles estimate allows users to estimate the C02 emissions from a vehicle travelling a specified distance. Simply provide the vehicle model and the distance it is travelling and it will return the amount of C02 emitted from the trip.'
-			}
+			'electricity': 'The electricity estimate allows users to obtain an emissions estimate based on a country and the watt hours of consumption. The calculation of the emissions estimate selects the emission factor for the geographic region and multiplies that with the number of units consumed.',
+			'flight': 'The flights estimate allows users to obtain an emissions estimate based on flights between airports and the number of passengers. The calculation of the emissions estimate is based on a methodology similar to the one developed by the ICAO.',
+			'fuel_combustion': 'The fuel combustion estimate allows users to estimate the C02 emissions from the combustion of a certain quantity of specified fuel. Simply provide the fuel type and the fuel quantity and it will return the amount of C02 emitted from its combustion.',
+			'shipping': 'The shipping estimate allows users to estimate the C02 emissions from shipping freight given a method of transportation. Simply provide the weight and distance of the package and the method of transportation and it will return the resulting C02 from that shipment.',
+			'vehicles': 'The vehicles estimate allows users to estimate the C02 emissions from a vehicle travelling a specified distance. Simply provide the vehicle model and the distance it is travelling and it will return the amount of C02 emitted from the trip.'
 		};
 	}
 
-	static Future<List<Option>> getAirports() async {
+	static Future<List<Choice>> getAirports() async {
 		return (jsonDecode(await rootBundle.loadString('assets/airports.json')) as List<dynamic>)
 			.map((entry) {
 				final name = entry['name']!, municipality = entry['municipality']!, iata = entry['iata_code']!;
 				final label = '$name${name.isNotEmpty && municipality.isNotEmpty ? ', ' : ''}$municipality ($iata)';
-				return Option(iata, label);
+				return Choice(iata, label);
 			})
-			.cast<Option>()
+			.cast<Choice>()
 			.toList();
 	}
 
-	static Map<String, Map<String, dynamic>> getFuelSources() {
+	static List<List<dynamic>> _getFuelSourcesInfo() {
+		return [
+			['bit', 'Bituminous Coal', ['BTU', 'Short Ton']],
+			['dfo', 'Home Heating and Diesel Fuel (Distillate)', ['BTU', 'Gallon']],
+			['jf', 'Jet Fuel', ['BTU', 'Gallon']],
+			['ker', 'Kerosene', ['BTU', 'Gallon']],
+			['lig', 'Lignite Coal', ['BTU', 'Short Ton']],
+			['msw', 'Municipal Solid Waste', ['BTU', 'Short Ton']],
+			['ng', 'Natural Gas', ['BTU', 'Thousand Cubic Feet']],
+			['pc', 'Petroleum Coke', ['BTU', 'Gallon']],
+			['pg', 'Propane Gas', ['BTU', 'Gallon']],
+			['rfo', 'Residual Fuel Oil', ['BTU', 'Gallon']],
+			['sub', 'Subbituminous Coal', ['BTU', 'Short Ton']],
+			['tdf', 'Tire-Derived Fuel', ['BTU', 'Short Ton']],
+			['wo', 'Waste Oil', ['BTU', 'Barrel']]
+		];
+	}
+
+	static List<Choice> getFuelSources() {
+		return _getFuelSourcesInfo()
+			.map((entry) => Choice(entry[0], entry[1]))
+			.toList();
+	}
+
+	static Map<String, List<Choice>> getUnits() {
 		return {
-			'bit': {
-				'label': 'Bituminous Coal',
-				'units': ['Short Ton', 'BTU']
-			},
-			'dfo': {
-				'label': 'Home Heating and Diesel Fuel (Distillate)',
-				'units': ['Gallon', 'BTU']
-			},
-			'jf': {
-				'label': 'Jet Fuel',
-				'units': ['Gallon', 'BTU']
-			},
-			'ker': {
-				'label': 'Kerosene',
-				'units': ['Gallon', 'BTU']
-			},
-			'lig': {
-				'label': 'Lignite Coal',
-				'units': ['Short Ton', 'BTU']
-			},
-			'msw': {
-				'label': 'Municipal Solid Waste',
-				'units': ['Short Ton', 'BTU']
-			},
-			'ng': {
-				'label': 'Natural Gas',
-				'units': ['Thousand Cubic Feet', 'BTU']
-			},
-			'pc': {
-				'label': 'Petroleum Coke',
-				'units': ['Gallon', 'BTU']
-			},
-			'pg': {
-				'label': 'Propane Gas',
-				'units': ['Gallon', 'BTU']
-			},
-			'rfo': {
-				'label': 'Residual Fuel Oil',
-				'units': ['Gallon', 'BTU']
-			},
-			'sub': {
-				'label': 'Subbituminous Coal',
-				'units': ['Short Ton', 'BTU']
-			},
-			'tdf': {
-				'label': 'Tire-Derived Fuel',
-				'units': ['Short Ton', 'BTU']
-			},
-			'wo': {
-				'label': 'Waste Oil',
-				'units': ['Barrel', 'BTU']
-			}
+			...{
+				'electricity': ['kWh', 'MWh'],
+				'distance': ['km', 'mi'],
+				'carbon': ['kg'],
+			}.map((measure, units) => MapEntry(measure, units
+				.map((unit) => Choice(unit.toLowerCase(), unit))
+				.toList()
+			)),
+
+			'weight': ['kg', 'g', 'lb', 'mt']
+				.map((unit) => Choice(unit, unit != 'mt' ? unit : 't'))
+				.toList(),
+
+			for (final source in _getFuelSourcesInfo())
+				'fuel_${source[0]}': (source[2] as List<String>)
+					.map((unit) => Choice(unit.toLowerCase().replaceAll(' ', '_'), unit))
+					.toList(),
 		};
 	}
 
-	static List<Option> getFuelSourcesLabels() {
-		return getFuelSources()
-			.entries.map((entry) => Option(entry.key, entry.value['label']))
-			.toList();
-	}
-
-	static List<Option> getFuelSourcesUnits(String code) {
-		return (getFuelSources()[code]!['units'] as List<String>)
-			.map((unit) => Option(unit.toLowerCase().replaceAll(' ', '_'), unit))
-			.toList();
-	}
-
-	static List<Option> getCountries() {
+	static List<Choice> getCountries() {
 		return [
 			['at', 'Austria'],
 			['be', 'Belgium'],
@@ -163,36 +125,18 @@ class Storage {
 			['se', 'Sweden'],
 			['us', 'United States of America'],
 			['gb', 'United Kingdom']
-		].map((entry) => Option(entry[0], entry[1])).toList();
+		].map((entry) => Choice(entry[0], entry[1])).toList();
 	}
 
-	static List<Option> getCabinClasses() {
+	static List<Choice> getCabinClasses() {
 		return ['Economy', 'Premium']
-			.map((entry) => Option(entry.toLowerCase(), entry))
+			.map((entry) => Choice(entry.toLowerCase(), entry))
 			.toList();
 	}
 
-	static List<Option> getTransportMethods() {
+	static List<Choice> getTransportMethods() {
 		return ['Ship', 'Train', 'Truck', 'Plane']
-			.map((entry) => Option(entry.toLowerCase(), entry))
-			.toList();
-	}
-
-	static List<Option> getElectricityUnits() {
-		return ['MWh', 'kWh']
-			.map((entry) => Option(entry.toLowerCase(), entry))
-			.toList();
-	}
-
-	static List<Option> getDistanceUnits() {
-		return ['mi', 'km']
-			.map((entry) => Option(entry, entry))
-			.toList();
-	}
-
-	static List<Option> getWeightUnits() {
-		return ['g', 'lb', 'kg', 'mt']
-			.map((entry) => Option(entry, entry != 'mt' ? entry : 't'))
+			.map((entry) => Choice(entry.toLowerCase(), entry))
 			.toList();
 	}
 }

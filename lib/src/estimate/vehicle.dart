@@ -17,8 +17,8 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 	String? error;
 
 	final _formKey = GlobalKey<FormState>();
-	final ValueNotifier<List<Option>> filteredManufacturerOptions = ValueNotifier<List<Option>>([]);
-	final ValueNotifier<List<Option>> filteredModelOptions = ValueNotifier<List<Option>>([]);
+	final ValueNotifier<List<Choice>> filteredManufacturerOptions = ValueNotifier<List<Choice>>([]);
+	final ValueNotifier<List<Choice>> filteredModelOptions = ValueNotifier<List<Choice>>([]);
 	double? selectedDistance;
 	String? selectedManufacturer;
 	String? selectedModel;
@@ -63,7 +63,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 		if (type == 'manufacturer') {
 			String query = manufacturerController.text;
 			if (query.isNotEmpty) {
-				final List<Option> options = await Broker.getVehicleManufacturers();
+				final List<Choice> options = await Broker.getVehicleManufacturers();
 				filteredManufacturerOptions.value = options.where((option) => option.label.toLowerCase().contains(query.toLowerCase())).toList();
 			}
 			else {
@@ -73,7 +73,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 		else {
 			String query = modelController.text;
 			if (query.isNotEmpty && selectedManufacturer != null) {
-				final List<Option> options = await Broker.getVehicleModels(selectedManufacturer!);
+				final List<Choice> options = await Broker.getVehicleModels(selectedManufacturer!);
 				filteredModelOptions.value = options.where((option) => option.label.toLowerCase().contains(query.toLowerCase())).toList();
 			}
 			else {
@@ -101,7 +101,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 										const SizedBox(height: 10),
 										Padding(
 											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-											child: ValueListenableBuilder<List<Option>>(
+											child: ValueListenableBuilder<List<Choice>>(
 												valueListenable: filteredManufacturerOptions,
 												builder: (context, options, child) {
 													return SelectorField(
@@ -110,7 +110,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 														onSelected: (String? manufacturer) {
 															selectedManufacturer = manufacturer;
 														},
-														dropdownMenuEntries: options.map(Option.asDropdownMenuEntry).toList(),
+														dropdownMenuEntries: options.map(Choice.asDropdownMenuEntry).toList(),
 													);
 												},
 											),
@@ -118,7 +118,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 										const SizedBox(height: 10),
 										Padding(
 											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-											child: ValueListenableBuilder<List<Option>>(
+											child: ValueListenableBuilder<List<Choice>>(
 												valueListenable: filteredModelOptions,
 												builder: (context, options, child) {
 													return SelectorField(
@@ -127,7 +127,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 														onSelected: (String? model) {
 															selectedModel = model;
 														},
-														dropdownMenuEntries: options.map(Option.asDropdownMenuEntry).toList(),
+														dropdownMenuEntries: options.map(Choice.asDropdownMenuEntry).toList(),
 													);
 												},
 											),
@@ -191,7 +191,7 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 										return Padding(
 											padding: const EdgeInsets.symmetric(vertical: 15),
 											child:Text(
-												'$estimate ${snapshot.data?['carbon']} of CO2',
+												'$estimate ${snapshot.data?['carbon']!.label} of CO2',
 												textAlign: TextAlign.center,
 												style: const TextStyle(
 													fontSize: 23,

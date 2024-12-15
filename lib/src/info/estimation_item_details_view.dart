@@ -13,15 +13,15 @@ class EstimationItemDetailsView extends StatelessWidget {
 
 		switch (type) {
 			case 'Electricity':
-				return infos['electricity']!['description']!;
+				return infos['electricity']!;
 			case 'Flight':
-				return infos['flight']!['description']!;
+				return infos['flight']!;
 			case 'Fuel Combustion':
-				return infos['fuel_combustion']!['description']!;
+				return infos['fuel_combustion']!;
 			case 'Shipping':
-				return infos['shipping']!['description']!;
+				return infos['shipping']!;
 			case 'Vehicle':
-				return infos['vehicles']!['description']!;
+				return infos['vehicles']!;
 			default:
 				return 'default';
 		}

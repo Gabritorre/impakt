@@ -121,7 +121,7 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 										return Padding(
 											padding: const EdgeInsets.symmetric(vertical: 15),
 											child: Text(
-												'$estimate ${snapshot.data?['carbon']} of CO2',
+												'$estimate ${snapshot.data?['carbon']!.label} of CO2',
 												textAlign: TextAlign.center,
 												style: const TextStyle(
 													fontSize: 23,
@@ -192,7 +192,7 @@ class CountrySelectorField extends StatelessWidget{
 			requestFocusOnTap: true,
 			label: const Text('Country'),
 			onSelected: onSelected,
-			dropdownMenuEntries: Storage.getCountries().map(Option.asDropdownMenuEntry).toList(),
+			dropdownMenuEntries: Storage.getCountries().map(Choice.asDropdownMenuEntry).toList(),
 		);
 	}
 }

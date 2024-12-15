@@ -5,10 +5,11 @@ import 'package:http/http.dart' as http;
 
 enum HttpMethod {get, post}
 
-class Option {
+class Choice {
 	final String code, label;
-	Option(this.code, this.label);
-	static DropdownMenuEntry<String> asDropdownMenuEntry(Option option) => DropdownMenuEntry(value: option.code, label: option.label);
+	Choice(this.code, this.label);
+	static DropdownMenuEntry<String> asDropdownMenuEntry(Choice option) => DropdownMenuEntry(value: option.code, label: option.label);
+	@override String toString() => '<$label#$code>';
 }
 
 class Api {

@@ -62,7 +62,7 @@ class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationV
 												onSelected: (String? fuelType) {
 													selectedFuelType = fuelType;
 												},
-												dropdownMenuEntries: Storage.getFuelSourcesLabels().map(Option.asDropdownMenuEntry).toList(),
+												dropdownMenuEntries: Storage.getFuelSources().map(Choice.asDropdownMenuEntry).toList(),
 											)
 										),
 										const SizedBox(height: 10),
@@ -125,7 +125,7 @@ class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationV
 										return Padding(
 											padding: const EdgeInsets.symmetric(vertical: 15),
 											child: Text(
-												'$estimate ${snapshot.data?['carbon']} of CO2',
+												'$estimate ${snapshot.data?['carbon']!.label} of CO2',
 												textAlign: TextAlign.center,
 												style: const TextStyle(
 													fontSize: 23,

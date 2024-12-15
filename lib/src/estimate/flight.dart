@@ -17,8 +17,8 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 	String? error;
 	
 	final _formKey = GlobalKey<FormState>();
-	final ValueNotifier<List<Option>> filteredDepartureOptions = ValueNotifier<List<Option>>([]);
-	final ValueNotifier<List<Option>> filteredDestinationOptions = ValueNotifier<List<Option>>([]);
+	final ValueNotifier<List<Choice>> filteredDepartureOptions = ValueNotifier<List<Choice>>([]);
+	final ValueNotifier<List<Choice>> filteredDestinationOptions = ValueNotifier<List<Choice>>([]);
 	String? selectedDepartureAirport;
 	String? selectedDestinationAirport;
 	int? passengers;
@@ -67,7 +67,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 		if (type == 'departure') {
 			String query = departureController.text;
 			if (query.length >= 3) {
-				final List<Option> options = await Storage.getAirports();
+				final List<Choice> options = await Storage.getAirports();
 				filteredDepartureOptions.value = options.where((option) => option.label.toLowerCase().contains(query.toLowerCase())).toList();
 			}
 			else {
@@ -77,7 +77,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 		else {
 			String query = destinationController.text;
 			if (query.length >= 3) {
-				final List<Option> options = await Storage.getAirports();
+				final List<Choice> options = await Storage.getAirports();
 				filteredDestinationOptions.value = options.where((option) => option.label.toLowerCase().contains(query.toLowerCase())).toList();
 			}
 			else {
@@ -105,7 +105,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 										const SizedBox(height: 10),
 										Padding(
 											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-											child: ValueListenableBuilder<List<Option>>(
+											child: ValueListenableBuilder<List<Choice>>(
 												valueListenable: filteredDepartureOptions,
 												builder: (context, options, child) {
 													return SelectorField(
@@ -114,7 +114,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 														onSelected: (String? airport) {
 															selectedDepartureAirport = airport;
 														},
-														dropdownMenuEntries: options.map(Option.asDropdownMenuEntry).toList(),
+														dropdownMenuEntries: options.map(Choice.asDropdownMenuEntry).toList(),
 													);
 												},
 											),
@@ -122,7 +122,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 										const SizedBox(height: 10),
 										Padding(
 											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-											child: ValueListenableBuilder<List<Option>>(
+											child: ValueListenableBuilder<List<Choice>>(
 												valueListenable: filteredDestinationOptions,
 												builder: (context, options, child) {
 													return SelectorField(
@@ -131,7 +131,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 														onSelected: (String? airport) {
 															selectedDestinationAirport = airport;
 														},
-														dropdownMenuEntries: options.map(Option.asDropdownMenuEntry).toList(),
+														dropdownMenuEntries: options.map(Choice.asDropdownMenuEntry).toList(),
 													);
 												},
 											),
@@ -158,7 +158,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 												onSelected: (String? classType) {
 													cabinClass = classType;
 												},
-												dropdownMenuEntries: Storage.getCabinClasses().map(Option.asDropdownMenuEntry).toList(),
+												dropdownMenuEntries: Storage.getCabinClasses().map(Choice.asDropdownMenuEntry).toList(),
 											)
 										),
 										const SizedBox(height: 10),
@@ -207,7 +207,7 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 										return Padding(
 											padding: const EdgeInsets.symmetric(vertical: 15),
 											child:Text(
-												'$estimate ${snapshot.data?['carbon']} of CO2',
+												'$estimate ${snapshot.data?['carbon']!.label} of CO2',
 												textAlign: TextAlign.center,
 												style: const TextStyle(
 													fontSize: 23,
