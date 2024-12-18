@@ -103,7 +103,7 @@ class _MainViewState extends State<MainView> {
 
 					// internal path on /home
 					case ElectricityEstimationView.routeName:
-						page = const ElectricityEstimationView();
+						page = ElectricityEstimationView(controller: widget.settingsController);
 						break;
 					case FlightEstimationView.routeName:
 						page = const FlightEstimationView();

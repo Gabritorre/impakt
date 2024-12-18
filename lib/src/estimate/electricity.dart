@@ -3,11 +3,14 @@ import 'package:impakt/src/api/broker.dart';
 
 import '../api/api.dart';
 import '../api/storage.dart';
+import '../settings/settings_controller.dart';
 
 class ElectricityEstimationView extends StatefulWidget  {
-	const ElectricityEstimationView({super.key});
+	const ElectricityEstimationView({super.key, required this.controller});
 	static const routeName = '/electricity_estimation';
-	
+
+	final SettingsController controller;
+
 	@override
 	State<ElectricityEstimationView> createState() => _ElectricityEstimationViewState();
 }
@@ -45,105 +48,111 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 			body: Align(
 				alignment: Alignment.topCenter,
 				child: SingleChildScrollView(
-					child: Column(
-						mainAxisSize: MainAxisSize.min,
-						children: [
-							Form(
-								key: _formKey,
-								child: Column(
-									children: [
-										const SizedBox(height: 10),
-										Padding(
-											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-											child: ElectricityConsumptionField(
-												validator: (value) {
-												if (value == null || value.isEmpty) {
-														return 'Field required';
-													}
-													electricityValue = double.tryParse(value);
-													return null;
-												},
-											),
-										),
-										const SizedBox(height: 10),
-										Padding(
-											padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-											child: CountrySelectorField(
-												controller: countryController,
-												onSelected: (String? country) {
-													selectedCountry = country;
-												},
-											)
-										),
-										const SizedBox(height: 10),
-										Padding(
-											padding: const EdgeInsets.symmetric(vertical: 15),
-											child: ElevatedButton(
-												style: ElevatedButton.styleFrom(
-													backgroundColor: const Color.fromARGB(255, 61, 61, 61),
-													foregroundColor: const Color.fromARGB(255, 223, 223, 223),
-													padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-												),
-												onPressed: () {
-													FocusScope.of(context).unfocus();	//close keyboard
-													if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedCountry == null ) {
-														ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all the input fields')));
-													}
-													else {
-														setState(() {
-															estimate = null;
-															error = null;
-														});
-														estimateElectricity(electricityValue, selectedCountry);
-													}
-												},
-												child: const Text(
-													'Estimate',
-													textAlign: TextAlign.center,
-													style: TextStyle(
-														fontSize: 18,
-														fontWeight: FontWeight.bold,
+					child: ListenableBuilder(
+						listenable: widget.controller,
+						builder: (BuildContext context, Widget? child) {
+							return Column(
+								mainAxisSize: MainAxisSize.min,
+								children: [
+									Form(
+										key: _formKey,
+										child: Column(
+											children: [
+												const SizedBox(height: 10),
+												Padding(
+													padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+													child: ElectricityConsumptionField(
+														validator: (value) {
+														if (value == null || value.isEmpty) {
+																return 'Field required';
+															}
+															electricityValue = double.tryParse(value);
+															return null;
+														},
+														controller: widget.controller,
 													),
 												),
-											),
-										),
-									],
-								),
-							),
-							FutureBuilder(
-								future: Storage.getSavedUnits(),
-								builder: (context, snapshot) {
-									if (error != null) {
-										return Text(error!);
-									}
-									// if the estimation has been calculated and the estimation measure unit has been loaded from the storage
-									else if (estimate != null && snapshot.connectionState == ConnectionState.done) {
-										return Padding(
-											padding: const EdgeInsets.symmetric(vertical: 15),
-											child: Text(
-												'$estimate ${snapshot.data?['carbon']!.label} of CO2',
-												textAlign: TextAlign.center,
-												style: const TextStyle(
-													fontSize: 23,
-													fontWeight: FontWeight.bold,
+												const SizedBox(height: 10),
+												Padding(
+													padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+													child: CountrySelectorField(
+														controller: countryController,
+														onSelected: (String? country) {
+															selectedCountry = country;
+														},
+													)
 												),
-											),
-										);
-									}
-									// if not all the fileds have been filled
-									else if (estimate == null && selectedCountry == null && electricityValue == null) {
-										return const SizedBox(height: 0);
-									}
-									// if the estimation is being calculated
-									else {
-										return const Padding(
-											padding: EdgeInsets.symmetric(vertical: 15),
-											child: CircularProgressIndicator()
-										);
-									}
-								},
-							),
-						],
+												const SizedBox(height: 10),
+												Padding(
+													padding: const EdgeInsets.symmetric(vertical: 15),
+													child: ElevatedButton(
+														style: ElevatedButton.styleFrom(
+															backgroundColor: const Color.fromARGB(255, 61, 61, 61),
+															foregroundColor: const Color.fromARGB(255, 223, 223, 223),
+															padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+														),
+														onPressed: () {
+															FocusScope.of(context).unfocus();	//close keyboard
+															if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedCountry == null ) {
+																ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all the input fields')));
+															}
+															else {
+																setState(() {
+																	estimate = null;
+																	error = null;
+																});
+																estimateElectricity(electricityValue, selectedCountry);
+															}
+														},
+														child: const Text(
+															'Estimate',
+															textAlign: TextAlign.center,
+															style: TextStyle(
+																fontSize: 18,
+																fontWeight: FontWeight.bold,
+															),
+														),
+													),
+												),
+											],
+										),
+									),
+									FutureBuilder(
+										future: Storage.getSavedUnits(),
+										builder: (context, snapshot) {
+											if (error != null) {
+												return Text(error!);
+											}
+											// if the estimation has been calculated and the estimation measure unit has been loaded from the storage
+											else if (estimate != null && snapshot.connectionState == ConnectionState.done) {
+												return Padding(
+													padding: const EdgeInsets.symmetric(vertical: 15),
+													child: Text(
+														'$estimate ${snapshot.data?['carbon']!.label} of CO2',
+														textAlign: TextAlign.center,
+														style: const TextStyle(
+															fontSize: 23,
+															fontWeight: FontWeight.bold,
+														),
+													),
+												);
+											}
+											// if not all the fileds have been filled
+											else if (estimate == null && selectedCountry == null && electricityValue == null) {
+												return const SizedBox(height: 0);
+											}
+											// if the estimation is being calculated
+											else {
+												return const Padding(
+													padding: EdgeInsets.symmetric(vertical: 15),
+													child: CircularProgressIndicator()
+												);
+											}
+										},
+									),
+								],
+							);
+						},
 					),
 				),
 			),
@@ -152,20 +161,21 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 }
 
 class ElectricityConsumptionField extends StatelessWidget {
-	const ElectricityConsumptionField({super.key, this.validator});
+	const ElectricityConsumptionField({super.key, this.validator, required this.controller});
 	final FormFieldValidator<String>? validator;
+	final SettingsController controller;
 
 	@override
 	Widget build(BuildContext context) {
-				return TextFormField(
+		return TextFormField(
 			keyboardType: TextInputType.number,
-			decoration: const InputDecoration(
+			decoration: InputDecoration(
 				labelText: 'Electricity consumption',
-				border: UnderlineInputBorder(),
+				border: const UnderlineInputBorder(),
 				suffix : Text(
-					'kWh',
+					controller.units['electricity']!.label,
 					textAlign: TextAlign.center,
-					style: TextStyle(
+					style: const TextStyle(
 						fontSize: 18,
 						fontWeight: FontWeight.bold,
 						color: Color.fromARGB(255, 155, 155, 155),
