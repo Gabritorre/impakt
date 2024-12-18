@@ -84,9 +84,12 @@ class Storage {
 			)),
 
 			for (final source in _getFuelSourcesInfo())
-				'fuel_${source[0]}': (source[2] as List<String>)
-					.map((unit) => Choice(unit.toLowerCase().replaceAll(' ', '_'), unit))
-					.toList(),
+				'fuel_${source[0]}': (source[2] as List<String>).map((unit) =>
+						Choice(unit.toLowerCase()
+							.replaceAll(RegExp(r'[^0-9a-z ]'), '')
+							.replaceAll(RegExp(r' +'), '_'),
+						unit)
+					).toList(),
 		};
 	}
 
