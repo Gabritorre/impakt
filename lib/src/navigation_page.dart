@@ -109,13 +109,13 @@ class _MainViewState extends State<MainView> {
 						page = const FlightEstimationView();
 						break;
 					case FuelCombustionEstimationView.routeName:
-						page = const FuelCombustionEstimationView();
+						page = FuelCombustionEstimationView(controller: widget.settingsController);
 						break;
 					case ShippingEstimationView.routeName:
-						page = const ShippingEstimationView();
+						page = ShippingEstimationView(controller: widget.settingsController);
 						break;
 					case VehicleEstimationView.routeName:
-						page = const VehicleEstimationView();
+						page = VehicleEstimationView(controller: widget.settingsController);
 						break;
 
 					// internal path on /estimation_list

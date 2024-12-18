@@ -50,16 +50,16 @@ class Storage {
 	static List<List<dynamic>> _getFuelSourcesInfo() {
 		return [
 			['bit', 'Bituminous Coal', ['BTU', 'Short Ton']],
-			['dfo', 'Home Heating and Diesel Fuel (Distillate)', ['BTU', 'Gallon']],
+			['dfo', 'Home Heating and\nDiesel Fuel (Distillate)', ['BTU', 'Gallon']],
 			['jf', 'Jet Fuel', ['BTU', 'Gallon']],
 			['ker', 'Kerosene', ['BTU', 'Gallon']],
 			['lig', 'Lignite Coal', ['BTU', 'Short Ton']],
-			['msw', 'Municipal Solid Waste', ['BTU', 'Short Ton']],
-			['ng', 'Natural Gas', ['BTU', 'Thousand Cubic Feet']],
+			['msw', 'Municipal Solid\nWaste', ['BTU', 'Short Ton']],
+			['ng', 'Natural Gas', ['BTU', 'Thousand\n Cubic Feet']],
 			['pc', 'Petroleum Coke', ['BTU', 'Gallon']],
 			['pg', 'Propane Gas', ['BTU', 'Gallon']],
 			['rfo', 'Residual Fuel Oil', ['BTU', 'Gallon']],
-			['sub', 'Subbituminous Coal', ['BTU', 'Short Ton']],
+			['sub', 'Subbituminous\nCoal', ['BTU', 'Short Ton']],
 			['tdf', 'Tire-Derived Fuel', ['BTU', 'Short Ton']],
 			['wo', 'Waste Oil', ['BTU', 'Barrel']]
 		];
