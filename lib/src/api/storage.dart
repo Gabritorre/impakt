@@ -76,15 +76,12 @@ class Storage {
 			...{
 				'electricity': ['kWh', 'MWh'],
 				'distance': ['km', 'mi'],
-				'carbon': ['kg'],
+				'weight': ['kg', 'g', 'lb', 'mt'],
+				'carbon': ['kg', 'g', 'lb', 'mt']
 			}.map((measure, units) => MapEntry(measure, units
 				.map((unit) => Choice(unit.toLowerCase(), unit))
 				.toList()
 			)),
-
-			'weight': ['kg', 'g', 'lb', 'mt']
-				.map((unit) => Choice(unit, unit != 'mt' ? unit : 't'))
-				.toList(),
 
 			for (final source in _getFuelSourcesInfo())
 				'fuel_${source[0]}': (source[2] as List<String>)
