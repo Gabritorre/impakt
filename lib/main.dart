@@ -10,8 +10,7 @@ void main() async {
 	await dotenv.load(fileName: 'assets/.env');
 	Broker.getVehicleManufacturers();	// Asynchronously fill the list of vehicle manufacturers
 
-	// Set up the SettingsController, which will glue user settings to multiple
-	// Flutter Widgets.
+	// Set up the SettingsController, which will glue user settings to multipleFlutter Widgets.
 	final settingsController = SettingsController(SettingsService());
 
 	// Load the user's preferred theme while the splash screen is displayed.
@@ -19,8 +18,7 @@ void main() async {
 	await settingsController.loadSettings();
 
 	// Run the app and pass in the SettingsController. The app listens to the
-	// SettingsController for changes, then passes it further down to the
-	// SettingsView.
+	// SettingsController for changes, then passes it further down to the SettingsView.
 	runApp(MyApp(settingsController: settingsController));
 }
 
@@ -35,22 +33,20 @@ class MyApp extends StatelessWidget {
 
 	@override
 	Widget build(BuildContext context) {
-		// Glue the SettingsController to the MaterialApp.
-		//
 		// The ListenableBuilder Widget listens to the SettingsController for changes.
 		// Whenever the user updates their settings, the MaterialApp is rebuilt.
 		return ListenableBuilder(
 			listenable: settingsController,
 			builder: (BuildContext context, Widget? child) {
 				return MaterialApp(
-					// the title of the application
 					title: 'impakt',
 
-					// Define a light and dark color theme. Then, read the user's
-					// preferred ThemeMode (light, dark, or system default) from the
-					// SettingsController to display the correct theme.
+					// Define a light and dark color theme.
 					theme: ThemeData(),
 					darkTheme: ThemeData.dark(),
+					
+					// Then, read the user's preferred ThemeMode (light, dark, or system default) from the
+					// SettingsController to display the correct theme.
 					themeMode: settingsController.themeMode,
 
 					home: MainView(settingsController: settingsController),
