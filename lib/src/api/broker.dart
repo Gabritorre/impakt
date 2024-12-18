@@ -88,7 +88,7 @@ class Broker {
 				final RegExp regex = RegExp(r'\"([A-Z]{3})\"');
 				final matches = regex.allMatches(e.responseBody!['message']);
 				final iataCodes = matches.map((match) => match.group(1));
-				if (iataCodes.length <= 2) {
+				if (iataCodes.isNotEmpty && iataCodes.length <= 2) {
 					throw ApiException(message: 'Invalid airports: ${iataCodes.join(', ')}');
 				} else {
 					rethrow;
