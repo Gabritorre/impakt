@@ -5,14 +5,13 @@ import 'package:impakt/src/api/broker.dart';
 import 'src/navigation_page.dart';
 
 import 'src/settings/settings_controller.dart';
-import 'src/settings/settings_service.dart';
 
 void main() async {
 	await dotenv.load(fileName: 'assets/.env');
 	Broker.getVehicleManufacturers();	// Asynchronously fill the list of vehicle manufacturers
 
 	// Set up the SettingsController, which will glue user settings to multipleFlutter Widgets.
-	final settingsController = SettingsController(SettingsService());
+	final settingsController = SettingsController();
 
 	// Load the user's preferred theme while the splash screen is displayed.
 	// This prevents a sudden theme change when the app is first displayed.

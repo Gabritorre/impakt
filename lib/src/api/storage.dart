@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,6 +7,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
 
 class Storage {
+
+	static Future<ThemeMode> getThemeMode() async {
+		final preferences = await SharedPreferences.getInstance();
+		final themeIndex = preferences.getInt('theme') ?? 0;
+		return ThemeMode.values[themeIndex];
+	}
+
+	static Future<void> setThemeMode(ThemeMode theme) async {
+		final preferences = await SharedPreferences.getInstance();
+		await preferences.setInt('theme', theme.index);
+	}
+
 	static Future<Map<String, Choice>> getSavedUnits() async {
 		final preferences = await SharedPreferences.getInstance();
 		if (!preferences.containsKey('units')) {

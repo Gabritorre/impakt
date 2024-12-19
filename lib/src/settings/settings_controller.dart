@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'settings_service.dart';
 import '../api/storage.dart';
 import '../api/api.dart';
 
@@ -9,9 +8,7 @@ import '../api/api.dart';
 ///
 /// SettingsController uses the SettingsService to store and retrieve user settings.
 class SettingsController with ChangeNotifier {
-	SettingsController(this._settingsService);
 
-	final SettingsService _settingsService;
 	late ThemeMode _themeMode;
 	late Map<String, Choice> _units;
 
@@ -21,7 +18,7 @@ class SettingsController with ChangeNotifier {
 
 	/// Load the user's settings from the SettingsService.
 	Future<void> loadSettings() async {
-		_themeMode = await _settingsService.themeMode();
+		_themeMode = await Storage.getThemeMode();
 		_units = await Storage.getSavedUnits();
 		notifyListeners();		 // Inform listeners a change has occurred.
 	}
@@ -35,7 +32,7 @@ class SettingsController with ChangeNotifier {
 		notifyListeners();		// Inform listeners a change has occurred.
 
 		// Makes the changes persistent
-		await _settingsService.updateThemeMode(newThemeMode);
+		await Storage.setThemeMode(newThemeMode);
 	}
 
 	Future<void> updateUnits(Map<String, String> unit) async {
