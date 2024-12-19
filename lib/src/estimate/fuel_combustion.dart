@@ -205,7 +205,7 @@ class SelectorField extends StatelessWidget{
 		return DropdownMenu(
 			controller: controller,
 			width: double.infinity,
-			menuHeight: null,
+			menuHeight: 200,
 			enableFilter: true,
 			enableSearch: false,
 			requestFocusOnTap: true,

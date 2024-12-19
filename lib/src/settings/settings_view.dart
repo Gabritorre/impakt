@@ -120,7 +120,12 @@ class UnitSelector extends StatelessWidget {
 							Storage.getUnits()[measureName]!.length,
 							(index) => DropdownMenuItem(
 								value: Storage.getUnits()[measureName]![index].code,
-								child: Text(Storage.getUnits()[measureName]![index].label),
+								child: Text(
+									Storage.getUnits()[measureName]![index].label,
+									style: TextStyle(
+										height: 1,
+									),
+								),
 							),
 						),
 						dropdownColor: Theme.of(context).brightness == Brightness.dark
