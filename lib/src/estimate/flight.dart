@@ -15,6 +15,7 @@ class FlightEstimationView extends StatefulWidget  {
 class _FlightEstimationViewState extends State<FlightEstimationView> {
 	String? estimate;
 	String? error;
+	bool validForm = false;
 	
 	final _formKey = GlobalKey<FormState>();
 	final ValueNotifier<List<Choice>> filteredDepartureOptions = ValueNotifier<List<Choice>>([]);
@@ -172,14 +173,20 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 												),
 												onPressed: () {
 													FocusScope.of(context).unfocus();	//close keyboard
-													if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedDepartureAirport == null || selectedDestinationAirport == null || passengers == null || cabinClass == null) {
+													setState(() {
+														estimate = null;
+														error = null;
+													});
+													if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedDepartureAirport == null || selectedDestinationAirport == null || cabinClass == null) {
+														validForm = false;
 														ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all the input fields')));
 													}
+													else if (passengers == null || passengers! <= 0) {
+														validForm = false;
+														ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Number of passengers must be a positive integer number')));
+													}
 													else {
-														setState(() {
-															estimate = null;
-															error = null;
-														});
+														validForm = true;
 														estimateFlight(selectedDepartureAirport, selectedDestinationAirport, passengers, cabinClass);
 													}
 												},
@@ -202,6 +209,10 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 									if (error != null) {
 										return Text(error!);
 									}
+									// if not all the fileds have been filled
+									else if (validForm == false) {
+										return const SizedBox(height: 0);
+									}
 									// if the estimation has been calculated and the estimation measure unit has been loaded from the storage
 									else if (estimate != null && snapshot.connectionState == ConnectionState.done) {
 										return Padding(
@@ -215,10 +226,6 @@ class _FlightEstimationViewState extends State<FlightEstimationView> {
 												),
 											),
 										);
-									}
-									// if not all the fileds have been filled
-									else if (estimate == null && selectedDepartureAirport == null && selectedDestinationAirport == null && passengers == null && cabinClass == null) {
-										return const SizedBox(height: 0);
 									}
 									// if the estimation is being calculated
 									else {

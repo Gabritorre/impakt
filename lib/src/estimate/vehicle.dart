@@ -18,6 +18,7 @@ class VehicleEstimationView extends StatefulWidget  {
 class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 	String? estimate;
 	String? error;
+	bool validForm = false;
 
 	final _formKey = GlobalKey<FormState>();
 	final ValueNotifier<List<Choice>> filteredManufacturerOptions = ValueNotifier<List<Choice>>([]);
@@ -163,14 +164,20 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 														),
 														onPressed: () {
 															FocusScope.of(context).unfocus();	//close keyboard
-															if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedDistance == null || selectedManufacturer == null || selectedModel == null) {
+															setState(() {
+																estimate = null;
+																error = null;
+															});
+															if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedManufacturer == null || selectedModel == null) {
+																validForm = false;
 																ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all the input fields')));
 															}
+															else if (selectedDistance == null || selectedDistance! <= 0) {
+																validForm = false;
+																ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Distance must be a positive number')));
+															}
 															else {
-																setState(() {
-																	estimate = null;
-																	error = null;
-																});
+																validForm = true;
 																estimateVehicle(selectedDistance, selectedModel);
 															}
 														},
@@ -193,6 +200,10 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 											if (error != null) {
 												return Text(error!);
 											}
+											// if not all the fileds have been filled
+											else if (validForm == false) {
+												return const SizedBox(height: 0);
+											}
 											// if the estimation has been calculated and the estimation measure unit has been loaded from the storage
 											else if (estimate != null && snapshot.connectionState == ConnectionState.done) {
 												return Padding(
@@ -206,10 +217,6 @@ class _VehicleEstimationViewState extends State<VehicleEstimationView> {
 														),
 													),
 												);
-											}
-											// if not all the fileds have been filled
-											else if (estimate == null && selectedDistance == null && selectedManufacturer == null && selectedModel == null) {
-												return const SizedBox(height: 0);
 											}
 											// if the estimation is being calculated
 											else {

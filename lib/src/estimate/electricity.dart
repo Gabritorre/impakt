@@ -18,6 +18,7 @@ class ElectricityEstimationView extends StatefulWidget  {
 class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 	String? estimate;
 	String? error;
+	bool validForm = false;
 
 	final _formKey = GlobalKey<FormState>();
 	String? selectedCountry;
@@ -93,14 +94,20 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 														),
 														onPressed: () {
 															FocusScope.of(context).unfocus();	//close keyboard
+															setState(() {
+																estimate = null;
+																error = null;
+															});
 															if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedCountry == null ) {
+																validForm = false;
 																ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all the input fields')));
 															}
+															else if (electricityValue == null || electricityValue! <= 0) {
+																validForm = false;
+																ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Electricity consumption must be a positive number')));
+															}
 															else {
-																setState(() {
-																	estimate = null;
-																	error = null;
-																});
+																validForm = true;
 																estimateElectricity(electricityValue, selectedCountry);
 															}
 														},
@@ -123,6 +130,10 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 											if (error != null) {
 												return Text(error!);
 											}
+											// if not all the fileds have been filled
+											else if (validForm == false) {
+												return const SizedBox(height: 0);
+											}
 											// if the estimation has been calculated and the estimation measure unit has been loaded from the storage
 											else if (estimate != null && snapshot.connectionState == ConnectionState.done) {
 												return Padding(
@@ -136,10 +147,6 @@ class _ElectricityEstimationViewState extends State<ElectricityEstimationView> {
 														),
 													),
 												);
-											}
-											// if not all the fileds have been filled
-											else if (estimate == null && selectedCountry == null && electricityValue == null) {
-												return const SizedBox(height: 0);
 											}
 											// if the estimation is being calculated
 											else {

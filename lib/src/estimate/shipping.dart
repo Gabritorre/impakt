@@ -18,6 +18,7 @@ class ShippingEstimationView extends StatefulWidget  {
 class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 	String? estimate;
 	String? error;
+	bool validForm = false;
 
 	final _formKey = GlobalKey<FormState>();
 	double? selectedWeight;
@@ -115,13 +116,24 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 														),
 														onPressed: () {
 															FocusScope.of(context).unfocus();	//close keyboard
-															if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedWeight == null || selectedDistance == null || selectedTransportMethod == null) {
+															setState(() {
+																estimate = null;
+																error = null;
+															});
+															if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedTransportMethod == null) {
+																validForm = false;
 																ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all the input fields')));
 															}
+															else if (selectedWeight == null || selectedWeight! <= 0) {
+																validForm = false;
+																ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Weight must be a positive number')));
+															}
+															else if (selectedDistance == null || selectedDistance! <= 0) {
+																validForm = false;
+																ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Distance must be a positive number')));
+															}
 															else {
-																setState(() {
-																	estimate = null;
-																});
+																validForm = true;
 																estimateShipping(selectedWeight, selectedDistance, selectedTransportMethod);
 															}
 														},
@@ -144,6 +156,10 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 											if (error != null) {
 												return Text(error!);
 											}
+											// if not all the fileds have been filled
+											else if (validForm == false) {
+												return const SizedBox(height: 0);
+											}
 											// if the estimation has been calculated and the estimation measure unit has been loaded from the storage
 											else if (estimate != null && snapshot.connectionState == ConnectionState.done) {
 												return Padding(
@@ -157,10 +173,6 @@ class _ShippingEstimationViewState extends State<ShippingEstimationView> {
 														),
 													),
 												);
-											}
-											// if not all the fileds have been filled
-											else if (estimate == null && selectedWeight == null && selectedDistance == null && selectedTransportMethod == null) {
-												return const SizedBox(height: 0);
 											}
 											// if the estimation is being calculated
 											else {

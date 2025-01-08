@@ -18,7 +18,8 @@ class FuelCombustionEstimationView extends StatefulWidget {
 class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationView> {
 	String? estimate;
 	String? error;
-	
+	bool validForm = false;
+
 	final _formKey = GlobalKey<FormState>();
 	String? selectedFuelType;
 	double? selectedFuelValue;
@@ -99,13 +100,20 @@ class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationV
 														),
 														onPressed: () {
 															FocusScope.of(context).unfocus();	//close keyboard
-															if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedFuelType == null || selectedFuelValue == null) {
+															setState(() {
+																estimate = null;
+																error = null;
+															});
+															if ((_formKey.currentState != null && !_formKey.currentState!.validate()) || selectedFuelType == null) {
+																validForm = false;
 																ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all the input fields')));
 															}
+															else if (selectedFuelValue == null || selectedFuelValue! <= 0) {
+																validForm = false;
+																ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Fuel value must be a positive number')));
+															}
 															else {
-																setState(() {
-																	estimate = null;
-																});
+																validForm = true;
 																estimateFuelCombustion(selectedFuelType, selectedFuelValue);
 															}
 														},
@@ -128,6 +136,10 @@ class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationV
 											if (error != null) {
 												return Text(error!);
 											}
+											// if not all the fileds have been filled
+											else if (validForm == false) {
+												return const SizedBox(height: 0);
+											}
 											// if the estimation has been calculated and the estimation measure unit has been loaded from the storage
 											else if (estimate != null && snapshot.connectionState == ConnectionState.done) {
 												return Padding(
@@ -141,10 +153,6 @@ class _FuelCombustionEstimationViewState extends State<FuelCombustionEstimationV
 														),
 													),
 												);
-											}
-											// if not all the fileds have been filled
-											else if (estimate == null && (selectedFuelType == null || selectedFuelValue == null)) {
-												return const SizedBox(height: 0);
 											}
 											// if the estimation is being calculated
 											else {
