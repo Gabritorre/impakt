@@ -44,14 +44,24 @@ class Api {
 		final http.Response response;
 		final url = Uri.parse('$_baseUrl$function');
 
+		final Future<http.Response> Function() fetcher;
 		if (method == HttpMethod.get) {
-			response = await http.get(url, headers: _headers);
+			fetcher = () async => await http.get(url, headers: _headers);
 		} else if (method == HttpMethod.post && body != null) {
-			response = await http.post(url, headers: _headers, body: jsonEncode(body));
+			fetcher = () async => await http.post(url, headers: _headers, body: jsonEncode(body));
 		} else {
 			throw ApiException(
 				requestMethod: method,
 				message: 'Malformed request'
+			);
+		}
+
+		try {
+			response = await fetcher();
+		} catch (error) {
+			throw ApiException(
+				requestMethod: method,
+				message: 'Connection failed'
 			);
 		}
 
